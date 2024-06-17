@@ -1,6 +1,6 @@
 {
-    "identifier": "com.pa.map.generator.dev",
-    "author":"TATAPSTAR",
+    "identifier": "com.pa.mod.map_generator",
+    "author":"Kirill Gasanov",
 
     "icon": "https://raw.githubusercontent.com/Planetary-Annihilation-Fandom/Map-Generator/master/icon.png",
     "display_name": "map.generator.dev",
@@ -28,7 +28,7 @@
 
     "scenes":{
         "new_game": [
-            "coui://ui/mods/map-generator/new_game.js"
+            "coui://ui/mods/mod.map_generator/map_generator.js"
         ]
     },
 

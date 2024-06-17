@@ -1,0 +1,202 @@
+.frame {
+    background: #252525;
+    /* background: linear-gradient(135deg, rgba(60, 60, 60, 1) 0%, rgba(255, 255, 255, 0) 89%) !important; */
+}
+
+.vertical {
+    display: flex;
+    flex-direction: column;
+}
+
+.horizontal {
+    display: flex;
+    flex-direction: row;
+}
+
+.options-block {
+    padding-top: 2px;
+    padding-left: 8px;
+    margin-bottom: 8px;
+}
+
+.gap-small {
+    margin-right: 5px;
+}
+
+button.common {
+    width: 30px !important;
+    height: 30px !important;
+
+    background: rgba(21, 21, 21, 1);
+    box-shadow: inset 0px 0px 8px rgba(255, 255, 255, 0.34);
+    border: 1px solid rgba(131, 131, 131, 0.89);
+    padding: 0% !important;
+
+    overflow: hidden;
+}
+
+button.common.xl {
+    width: 60px !important;
+}
+
+button.common.xxl {
+    width: 90px !important;
+}
+
+/* button.quad {
+    height: 30px;
+}
+
+button.quad.xl {
+    height: 30px;
+}
+
+button.quad.xxl {
+    height: 30px;
+} */
+
+img.quad {
+    height: 20px;
+    width: 20px;
+}
+
+img.quad.xl {
+    height: 40px;
+    width: 40px;
+    transform: translateY(-15%);
+}
+
+img.quad.xxl {
+    height: 60px;
+    width: 60px;
+    transform: translateY(-30%);
+}
+
+.selected-value{
+    rgb(189, 189, 189) !important;
+    font-size: 16px;
+    font-weight: normal;
+
+    margin-left: 8px;
+align-self: center;
+}
+
+
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 15rem;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    background: #444444;
+    box-shadow: inset 0px 1px 3px 2px rgba(0, 0, 0, 0.55);
+    height: 6px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    /* Override default look */
+    appearance: none;
+    margin-top: -10px;
+    height: 25px;
+    width: 10px;
+    /* Centers thumb on the track */
+    background-color: #242424;
+    border: 1px solid rgba(131, 131, 131, 0.89);
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.75);
+}
+
+input[type="range"]:focus::-webkit-slider-thumb {
+    outline: 1px solid #FAFAFA;
+}
+
+/* .tick {
+    display: block;
+    width: 3px;
+    background: #7C7C7C;
+} */
+
+/* input[type="range"].planet::-webkit-slider-thumb {
+    background-image: url("coui://ui/mods/mod.map_generator/icons/planet.png");
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+} */
+
+/* OLD  */
+
+
+
+.td {
+    padding: 0px, 0px, 0px, 0px;
+}
+
+.box_highlight {
+    box-shadow: 0px 0px 5px rgb(134, 134, 134) inset;
+}
+
+.section_title_main {
+    position: relative;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    text-transform: uppercase;
+    text-shadow: 0px 0px 0px rgb(22, 74, 95);
+    pointer-events: none;
+}
+
+.section_title_inner_duel {
+    position: relative;
+    /* padding-top: 10px; */
+    padding-bottom: 5px;
+    padding-left: 8px;
+    z-index: 1;
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    font-weight: bold;
+    font-size: 16px;
+    color: rgb(255, 136, 56);
+    text-shadow: 0px 0px 0px rgb(107, 50, 23);
+    pointer-events: none;
+}
+
+.section_title_inner_arena {
+    position: relative;
+    /* padding-top: 10px; */
+    padding-bottom: 5px;
+    padding-left: 8px;
+    z-index: 1;
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    font-weight: bold;
+    font-size: 16px;
+    color: rgb(255, 65, 65);
+    text-shadow: 0px 0px 0px rgb(255, 99, 151);
+    pointer-events: none;
+}
+
+.section_title_inner_wadiya {
+    position: relative;
+    /* padding-top: 10px; */
+    padding-bottom: 5px;
+    padding-left: 8px;
+    z-index: 1;
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    font-weight: bold;
+    font-size: 16px;
+    color: rgb(122, 108, 245);
+    text-shadow: 0px 0px 0px rgb(77, 161, 240);
+    pointer-events: none;
+}

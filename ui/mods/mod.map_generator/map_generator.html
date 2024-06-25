@@ -14,42 +14,65 @@
     <div id="frame-body" class="frame vertical">
         <div>TEST TEXT</div>
         <div class="options-block vertical">
-            <div id="options-planet-size">
-                <label>Planet size:</label>
-                <div class="horizontal">
-                    <button class="common btn-default gap-small">
-                        <img class="quad" src="coui://ui/mods/mod.map_generator/icons/planet.png">
-                    </button>
-                    <button class="common xl btn-default gap-small">
-                        <img class="quad xl" src="coui://ui/mods/mod.map_generator/icons/planet.png">
-                    </button>
-                    <button class="common xxl btn-default gap-small">
-                        <img class="quad xxl" src="coui://ui/mods/mod.map_generator/icons/planet.png">
-                    </button>
-                    <label class="selected-value gap-small">medium</label>
+            <div id="option-group-planet_size">
+                <div id="option-group-header" class ="horizontal">
+                    <label id="option-group-name" class="option gap-small">Planet size:</label>
+                    <label id="option-group-description" class="option description"></label>
+                </div>
+                <div id="option-set" class="horizontal">
+                    <div id="option-control" class="vertical gap-small">
+                        <button id="option-control-button" class="option btn-default"
+                            onclick="selectOption('option-group-planet_size',this,1)">
+                            <img class=" quad" src="coui://ui/mods/mod.map_generator/icons/planet.png">
+                        </button>
+                        <hr id="option-control-highlight" class="option" />
+                    </div>
+                    <div id="option-control" class="vertical gap-small">
+                        <button id="option-control-button" class="option xl btn-default"
+                            onclick="selectOption('option-group-planet_size',this,2)">
+                            <img class="quad xl" src="coui://ui/mods/mod.map_generator/icons/planet.png">
+                        </button>
+                        <hr id="option-control-highlight" class="option xl" />
+                    </div>
+                    <div id="option-control" class="vertical gap-small">
+                        <button id="option-control-button" class="option xxl btn-default"
+                            onclick="selectOption('option-group-planet_size',this,3)">
+                            <img class=" quad xxl" src="coui://ui/mods/mod.map_generator/icons/planet.png">
+                        </button>
+                        <hr id="option-control-highlight" class="option xxl" />
+                    </div>
                 </div>
             </div>
-            <div id="options-resources-amount">
-                <label>Metall amount:</label>
-                <div class="horizontal">
-                    <button class="common btn-default gap-small">
-                        <img class="quad" src="coui://ui/mods/mod.map_generator/icons/stockpile.png">
-                    </button>
-                    <button class="common xl btn-default gap-small">
-                        <img class="quad xl" src="coui://ui/mods/mod.map_generator/icons/stockpile.png">
-                    </button>
-                    <button class="common xxl btn-default gap-small">
-                        <img class="quad xxl" src="coui://ui/mods/mod.map_generator/icons/stockpile.png">
-                    </button>
-                    <label class="selected-value gap-small">medium</label>
+            <div id="option-group-metal">
+                <div id="option-group-header" class ="horizontal">
+                    <label id="option-group-name" class="option gap-small">Metall amount:</label>
+                    <label id="option-group-description" class="option description"></label>
+                </div>
+                <div id="option-set" class="horizontal">
+                    <div id="option-control" class="vertical gap-small">
+                        <button id="option-control-button" class="option btn-default"
+                            onclick="selectOption('option-group-metal',this,1)">
+                            <img class="quad" src="coui://ui/mods/mod.map_generator/icons/metal_small.png">
+                        </button>
+                        <hr id="option-control-highlight" class="option" />
+                    </div>
+                    <div id="option-control" class="vertical gap-small">
+                        <button id="option-control-button" class="option xl btn-default"
+                            onclick="selectOption('option-group-metal',this,2)">
+                            <img class="quad xl" src="coui://ui/mods/mod.map_generator/icons/metal_medium.png">
+                        </button>
+                        <hr id="option-control-highlight" class="option xl" />
+                    </div>
+                    <div id="option-control" class="vertical gap-small">
+                        <button id="option-control-button" class="option xxl btn-default"
+                            onclick="selectOption('option-group-metal',this,3)">
+                            <img class="quad xxl" src="coui://ui/mods/mod.map_generator/icons/metal_big.png">
+                        </button>
+                        <hr id="option-control-highlight" class="option xxl" />
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 </body>
-
-<datalist id="markers">
-    <option class="tick" value="2"></option>
-</datalist>
 
 </html>

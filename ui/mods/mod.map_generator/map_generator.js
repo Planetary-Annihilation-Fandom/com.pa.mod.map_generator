@@ -1,3 +1,45 @@
+
+const style_option_selected = 'selected';
+const planet_size_description_map = [
+    {
+        value: 1,
+        description: 'small'
+    },
+    {
+        value: 2,
+        description: 'medium'
+    },
+    {
+        value: 3,
+        description: 'big'
+    }
+]
+const metal_count_description_map = [
+    {
+        value: 1,
+        description: 'poor'
+    },
+    {
+        value: 2,
+        description: 'normal'
+    },
+    {
+        value: 3,
+        description: 'rich'
+    }
+]
+
+const option_group_handlers_map = [
+    {
+        id: 'option-group-planet_size',
+        function: handle_planet_size_option
+    },
+    {
+        id: 'option-group-metal',
+        function: handle_metal_count_option
+    }
+]
+
 function getRandomSeed() {
     return Math.floor(65536 * Math.random());
 }
@@ -135,6 +177,75 @@ $(function () {
 
 })
 
+function selectOption(option_group_id, option_button, option_value) {
+    $().ready(function () {
+        var option_group = $('#' + option_group_id);
+        //console.log(group_element);
+
+        var option_set = option_group.find("#option-set");
+
+        // console.log("option set");
+        // console.log(option_set[0]);
+        option_set.children("#option-control").each(function (index, element) {
+            // console.log(element);
+            // element is $(this)
+            var button = $(element).find("#option-control-button");
+            var highlight = $(element).find("#option-control-highlight");
+            
+            // add highlight or remove
+            // im using button[0] because button is a jquery object and the first element is the vanilla button
+            // console.log(button[0]);
+            if (button[0] === option_button) {
+                // console.log("found");
+                $(button).addClass(style_option_selected).blur();
+                $(button).children('img').addClass(style_option_selected);
+                $(highlight).addClass(style_option_selected);
+            } else {
+                $(button).removeClass(style_option_selected).blur();
+                $(button).children('img').removeClass(style_option_selected);
+                $(highlight).removeClass(style_option_selected);
+            }
+        })
+
+        var option_data = handle_option(option_group_id, option_value);
+        var option_group_description = $(option_group).find("#option-group-description");
+        if (option_data !== undefined) {
+            option_group_description.html(option_data.description);
+        }
+    })
+
+}
+
+// option_data example
+// {
+//     description: "description"
+// }
+
+function handle_option(option_group_id, option_value) {
+    if (option_group_id == "option-group-planet_size") {
+        return handle_planet_size_option(option_value);
+    }
+    if (option_group_id == "option-group-metal") {
+        return handle_metal_count_option(option_value);
+    }
+
+    return undefined
+}
+
+function handle_planet_size_option(option_value) {
+    var option_description = _.find(planet_size_description_map, {value: option_value}).description;
+
+    return {
+        description: option_description
+    }
+}
+function handle_metal_count_option(option_value) {
+    var option_description = _.find(metal_count_description_map, {value: option_value}).description;
+
+    return {
+        description: option_description
+    }
+}
 // TEMPLATES
 // function generateSmall() {
 //     console.log("fuck")
@@ -201,7 +312,7 @@ $(function () {
 // const moonBiome = "moon_lite"
 
 // const metalBiome = "metal"
-// const asteroidBiome = "asteroid" 
+// const asteroidBiome = "asteroid"
 // // Expansion biomes
 // //const greenhouseBiome = "greenhouse"
 
@@ -356,3 +467,7 @@ $(function () {
 //         return rSystem;
 //     });
 // }
+
+$(function () {
+    console.log("map generator loaded")
+})

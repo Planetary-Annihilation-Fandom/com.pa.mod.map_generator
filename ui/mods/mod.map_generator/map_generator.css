@@ -23,7 +23,7 @@
     margin-right: 5px;
 }
 
-button.common {
+button.option {
     width: 30px !important;
     height: 30px !important;
 
@@ -35,11 +35,16 @@ button.common {
     overflow: hidden;
 }
 
-button.common.xl {
+button.option.selected {
+    box-shadow: inset 0px 0px 8px #285AB5;
+    border: 1px solid #06FAE8;
+}
+
+button.option.xl {
     width: 60px !important;
 }
 
-button.common.xxl {
+button.option.xxl {
     width: 90px !important;
 }
 
@@ -58,6 +63,7 @@ button.quad.xxl {
 img.quad {
     height: 20px;
     width: 20px;
+    -webkit-filter: grayscale(100%);
 }
 
 img.quad.xl {
@@ -72,7 +78,43 @@ img.quad.xxl {
     transform: translateY(-30%);
 }
 
-.selected-value {
+img.selected{
+    -webkit-filter: grayscale(0%);
+}
+
+hr.option {
+    margin: 5px 0px 0px 0px;
+    height: 3px;
+    width: 30px;
+    border: 0px;
+    background-color: rgba(144, 144, 144, 0.21);
+}
+
+hr.option.selected {
+    background-color: #06FAE8;
+
+}
+
+hr.xl {
+    width: 60px;
+}
+
+hr.xxl {
+    width: 90px;
+}
+
+
+label.option{
+    color: #A1E5FF;
+    font-size: 13px;
+}
+
+label.option.description{
+    color: rgb(6, 255, 234);
+}
+
+
+.selected-value-description {
     color: rgb(189, 189, 189) !important;
     font-size: 16px;
     font-weight: normal;

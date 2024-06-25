@@ -28,17 +28,61 @@ const metal_count_description_map = [
         description: 'rich'
     }
 ]
-
-const option_group_handlers_map = [
+const biome_description_map = [
     {
-        id: 'option-group-planet_size',
-        function: handle_planet_size_option
+        value: 1,
+        description: 'moon'
     },
     {
-        id: 'option-group-metal',
-        function: handle_metal_count_option
+        value: 2,
+        description: 'asteroid'
+    },
+    {
+        value: 3,
+        description: 'desert'
+    },
+    {
+        value: 4,
+        description: 'forest'
+    },
+    {
+        value: 5,
+        description: 'lava'
+    },
+    {
+        value: 6,
+        description: 'metallic'
+    },
+    {
+        value: 7,
+        description: 'snow'
+    },
+    {
+        value: 8,
+        description: 'random'
     }
 ]
+
+// const option_group_handlers_map = [
+//     {
+//         id: 'option-group-planet_size',
+//         function: handle_planet_size_option
+//     },
+//     {
+//         id: 'option-group-metal',
+//         function: handle_metal_count_option
+//     },
+//     {
+//         id: 'option-group-biome',
+//         function: handle_biome_option
+//     }
+// ]
+
+function MapGeneratorModel(){
+    self = this;
+}
+
+MapGeneratorModel = new MapGeneratorModel();
 
 function getRandomSeed() {
     return Math.floor(65536 * Math.random());
@@ -209,6 +253,7 @@ function selectOption(option_group_id, option_button, option_value) {
 
         var option_data = handle_option(option_group_id, option_value);
         var option_group_description = $(option_group).find("#option-group-description");
+        // console.log(option_data);
         if (option_data !== undefined) {
             option_group_description.html(option_data.description);
         }
@@ -228,6 +273,9 @@ function handle_option(option_group_id, option_value) {
     if (option_group_id == "option-group-metal") {
         return handle_metal_count_option(option_value);
     }
+    if(option_group_id == "option-group-biome"){
+        return handle_biome_option(option_value);
+    }
 
     return undefined
 }
@@ -242,6 +290,13 @@ function handle_planet_size_option(option_value) {
 function handle_metal_count_option(option_value) {
     var option_description = _.find(metal_count_description_map, {value: option_value}).description;
 
+    return {
+        description: option_description
+    }
+}
+function handle_biome_option(option_value) {
+    var option_description = _.find(biome_description_map, {value: option_value}).description;
+    // console.log(option_value+" "+option_description)
     return {
         description: option_description
     }

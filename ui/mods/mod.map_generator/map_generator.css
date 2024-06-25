@@ -1,5 +1,6 @@
 .frame {
-    background: #252525;
+    /* background: #252525; */
+    align-items: center;
     /* background: linear-gradient(135deg, rgba(60, 60, 60, 1) 0%, rgba(255, 255, 255, 0) 89%) !important; */
 }
 
@@ -13,14 +14,55 @@
     flex-direction: row;
 }
 
+.options-container {
+    align-items: flex-end;
+    margin-bottom: 5px;
+    width: 100%;
+    justify-content: center;
+}
+
 .options-block {
-    padding-top: 2px;
-    padding-left: 8px;
-    margin-bottom: 8px;
+    padding-left: 3px;
+    flex-shrink: 0;
+}
+
+.options-block-biome{
+    width: 100px;
+}
+
+.options-grid {
+    flex-wrap: wrap;
+    max-width: 90px;
 }
 
 .gap-small {
     margin-right: 5px;
+}
+
+.gap-down-small {
+    margin-bottom: 5px;
+}
+
+.gap-down-medium {
+    margin-bottom: 8px;
+}
+
+
+button.generate {
+    border-width: 5px 40px 5px 40px;
+    border-image: url(coui://ui/main/shared/img/buttons/btn_lrg_std.png) 5 40 10 40 fill;
+    background-color: transparent;
+
+    padding: 0px;
+    margin-left: -8px;
+
+    width: 93%;
+    height: 35px;
+}
+
+button.generate:hover {
+    border-image: url(coui://ui/main/shared/img/buttons/btn_lrg_std_hover.png) 5 40 10 40 fill;
+    /* -webkit-transition: .1s; */
 }
 
 button.option {
@@ -78,11 +120,13 @@ img.quad.xxl {
     transform: translateY(-30%);
 }
 
-img.selected{
+img.selected {
     -webkit-filter: grayscale(0%);
 }
 
 hr.option {
+    /* removed lines cause there is no need to highlight options */
+    display: none;
     margin: 5px 0px 0px 0px;
     height: 3px;
     width: 30px;
@@ -103,16 +147,43 @@ hr.xxl {
     width: 90px;
 }
 
-
-label.option{
-    color: #A1E5FF;
-    font-size: 13px;
+hr.vertical-split {
+    margin: 0px 10px 0px 0px;
+    height: 90px;
+    width: 3px;
+    border: 0px;
+    background-color: rgba(144, 144, 144, 0.21);
 }
 
-label.option.description{
+
+label.option {
+    color: #A1E5FF;
+}
+
+label.option.description {
     color: rgb(6, 255, 234);
 }
 
+label.generate-planet-label {
+    color: #FAFAFA;
+    font-family: "Sansation";
+    font-weight: bold;
+    font-size: 13px;
+    text-transform: uppercase;
+
+    -webkit-animation:
+        pulsate 5s ease-in-out 0s alternate infinite none running;
+}
+
+@-webkit-keyframes pulsate {
+    0% {
+        -webkit-filter: drop-shadow(0 0px 3px rgba(6, 255, 234, 0.89));
+    }
+
+    100% {
+        -webkit-filter: drop-shadow(0 0px 10px rgba(41, 141, 255, 0.89));
+    }
+}
 
 .selected-value-description {
     color: rgb(189, 189, 189) !important;

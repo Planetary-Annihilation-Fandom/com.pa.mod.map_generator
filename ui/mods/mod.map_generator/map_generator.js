@@ -75,7 +75,7 @@ $(function () {
         console.log(lastRow[0])
     }
 
-    function applyBindingsToLastRow(){
+    function applyBindingsToLastRow() {
         ko.applyBindings(model, lastRow[0]);
     }
 
@@ -132,7 +132,7 @@ $(function () {
     //ko.applyBindings(model, duelContainer);
     // ko.applyBindings(model, arenaContainer);
     //ko.applyBindings(model, specificContainer);
-    
+
 })
 
 // TEMPLATES

@@ -11,7 +11,7 @@ const planet_size_description_map = [
     },
     {
         value: 3,
-        description: 'big'
+        description: 'large'
     }
 ]
 const metal_count_description_map = [
@@ -79,7 +79,7 @@ const biome_description_map = [
 // ]
 
 function MapGeneratorModel(){
-    self = this;
+    var self = this;
 }
 
 MapGeneratorModel = new MapGeneratorModel();

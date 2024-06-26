@@ -12,143 +12,155 @@
 
 <body>
     <div id="frame-body" class="frame vertical">
-        <div>TEST TEXT</div>
-        <div class="options-container horizontal">
-            <div class="options-block vertical gap-small">
-                <div id="option-group-planet_size" class="gap-down-medium">
-                    <div id="option-group-header" class="horizontal">
-                        <label id="option-group-name" class="option gap-small">Planet size:</label>
-                        <label id="option-group-description" class="option description"></label>
+        <div class="map-generator-header">Lobby planet generation</div>
+        <div class=" vertical centered">
+            <div class="options-container horizontal">
+                <div class="options-block vertical gap-small">
+                    <div id="option-group-planet_size" class="gap-down-medium">
+                        <div id="option-group-header" class="horizontal">
+                            <label id="option-group-name" class="option gap-small">Planet size:</label>
+                            <label id="option-group-description" class="option description"></label>
+                        </div>
+                        <div id="option-set" class="horizontal">
+                            <div id="option-control" class="vertical gap-small">
+                                <button id="option-control-button" class="option btn-default"
+                                    onclick="selectOption('option-group-planet_size',this,1)" data-bind="tooltip: '!LOC:Small planet', 
+                                click_sound: 'default', rollover_sound: 'default'" data-placement="right">
+                                    <img class=" quad" src="coui://ui/mods/mod.map_generator/icons/planet.png">
+                                </button>
+                                <hr id="option-control-highlight" class="option" />
+                            </div>
+                            <div id="option-control" class="vertical gap-small">
+                                <button id="option-control-button" class="option xl btn-default"
+                                    onclick="selectOption('option-group-planet_size',this,2)" data-bind="tooltip: '!LOC:Medium planet', 
+                                click_sound: 'default', rollover_sound: 'default'" data-placement="right">
+                                    <img class="quad xl" src="coui://ui/mods/mod.map_generator/icons/planet.png">
+                                </button>
+                                <hr id="option-control-highlight" class="option xl" />
+                            </div>
+                            <div id="option-control" class="vertical gap-small">
+                                <button id="option-control-button" class="option xxl btn-default"
+                                    onclick="selectOption('option-group-planet_size',this,3)" data-bind="tooltip: '!LOC:Large planet', 
+                                click_sound: 'default', rollover_sound: 'default'" data-placement="right">
+                                    <img class=" quad xxl" src="coui://ui/mods/mod.map_generator/icons/planet.png">
+                                </button>
+                                <hr id="option-control-highlight" class="option xxl" />
+                            </div>
+                        </div>
                     </div>
-                    <div id="option-set" class="horizontal">
-                        <div id="option-control" class="vertical gap-small">
-                            <button id="option-control-button" class="option btn-default"
-                                onclick="selectOption('option-group-planet_size',this,1)">
-                                <img class=" quad" src="coui://ui/mods/mod.map_generator/icons/planet.png">
-                            </button>
-                            <hr id="option-control-highlight" class="option" />
+                    <div id="option-group-metal">
+                        <div id="option-group-header" class="horizontal">
+                            <label id="option-group-name" class="option gap-small">Metall amount:</label>
+                            <label id="option-group-description" class="option description"></label>
                         </div>
-                        <div id="option-control" class="vertical gap-small">
-                            <button id="option-control-button" class="option xl btn-default"
-                                onclick="selectOption('option-group-planet_size',this,2)">
-                                <img class="quad xl" src="coui://ui/mods/mod.map_generator/icons/planet.png">
-                            </button>
-                            <hr id="option-control-highlight" class="option xl" />
-                        </div>
-                        <div id="option-control" class="vertical gap-small">
-                            <button id="option-control-button" class="option xxl btn-default"
-                                onclick="selectOption('option-group-planet_size',this,3)">
-                                <img class=" quad xxl" src="coui://ui/mods/mod.map_generator/icons/planet.png">
-                            </button>
-                            <hr id="option-control-highlight" class="option xxl" />
+                        <div id="option-set" class="horizontal">
+                            <div id="option-control" class="vertical gap-small">
+                                <button id="option-control-button" class="option btn-default"
+                                    onclick="selectOption('option-group-metal',this,1)" data-bind="tooltip: '!LOC:Poor planet', 
+                                click_sound: 'default', rollover_sound: 'default'" data-placement="right">
+                                    <img class="quad" src="coui://ui/mods/mod.map_generator/icons/metal_small.png">
+                                </button>
+                                <hr id="option-control-highlight" class="option" />
+                            </div>
+                            <div id="option-control" class="vertical gap-small">
+                                <button id="option-control-button" class="option xl btn-default"
+                                    onclick="selectOption('option-group-metal',this,2)" data-bind="tooltip: '!LOC:Normal planet', 
+                                click_sound: 'default', rollover_sound: 'default'" data-placement="right">
+                                    <img class="quad xl" src="coui://ui/mods/mod.map_generator/icons/metal_medium.png">
+                                </button>
+                                <hr id="option-control-highlight" class="option xl" />
+                            </div>
+                            <div id="option-control" class="vertical gap-small">
+                                <button id="option-control-button" class="option xxl btn-default"
+                                    onclick="selectOption('option-group-metal',this,3)" data-bind="tooltip: '!LOC:Rich planet', 
+                                click_sound: 'default', rollover_sound: 'default'" data-placement="right">
+                                    <img class="quad xxl" src="coui://ui/mods/mod.map_generator/icons/metal_big.png">
+                                </button>
+                                <hr id="option-control-highlight" class="option xxl" />
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div id="option-group-metal">
+                <hr class="vertical-split" />
+                <div id="option-group-biome" class="options-block-biome">
                     <div id="option-group-header" class="horizontal">
-                        <label id="option-group-name" class="option gap-small">Metall amount:</label>
+                        <label id="option-group-name" class="option gap-small">Biome:</label>
                         <label id="option-group-description" class="option description"></label>
                     </div>
-                    <div id="option-set" class="horizontal">
-                        <div id="option-control" class="vertical gap-small">
+                    <div id="option-set" class="horizontal options-grid">
+                        <div id="option-control" class="vertical">
                             <button id="option-control-button" class="option btn-default"
-                                onclick="selectOption('option-group-metal',this,1)">
-                                <img class="quad" src="coui://ui/mods/mod.map_generator/icons/metal_small.png">
+                                onclick="selectOption('option-group-biome',this,1)" data-bind="tooltip: '!LOC:Moon biome', 
+                            click_sound: 'default', rollover_sound: 'default'" data-placement="left">
+                                <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_moon.png">
                             </button>
-                            <hr id="option-control-highlight" class="option" />
                         </div>
-                        <div id="option-control" class="vertical gap-small">
-                            <button id="option-control-button" class="option xl btn-default"
-                                onclick="selectOption('option-group-metal',this,2)">
-                                <img class="quad xl" src="coui://ui/mods/mod.map_generator/icons/metal_medium.png">
+                        <div id="option-control" class="vertical">
+                            <button id="option-control-button" class="option btn-default"
+                                onclick="selectOption('option-group-biome',this,2)" data-bind="tooltip: '!LOC:Asteroid biome', 
+                            click_sound: 'default', rollover_sound: 'default'" data-placement="left">
+                                <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_asteroid.png">
                             </button>
-                            <hr id="option-control-highlight" class="option xl" />
                         </div>
-                        <div id="option-control" class="vertical gap-small">
-                            <button id="option-control-button" class="option xxl btn-default"
-                                onclick="selectOption('option-group-metal',this,3)">
-                                <img class="quad xxl" src="coui://ui/mods/mod.map_generator/icons/metal_big.png">
+                        <div id="option-control" class="vertical">
+                            <button id="option-control-button" class="option btn-default"
+                                onclick="selectOption('option-group-biome',this,3)" data-bind="tooltip: '!LOC:Desert/sand biome', 
+                            click_sound: 'default', rollover_sound: 'default'" data-placement="left">
+                                <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_desert.png">
                             </button>
-                            <hr id="option-control-highlight" class="option xxl" />
                         </div>
+                        <div id="option-control" class="vertical">
+                            <button id="option-control-button" class="option btn-default"
+                                onclick="selectOption('option-group-biome',this,4)" data-bind="tooltip: '!LOC:Forest/tropical biome', 
+                            click_sound: 'default', rollover_sound: 'default'" data-placement="left">
+                                <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_forest.png">
+                            </button>
+                        </div>
+                        <div id="option-control" class="vertical">
+                            <button id="option-control-button" class="option btn-default"
+                                onclick="selectOption('option-group-biome',this,5)" data-bind="tooltip: '!LOC:Lava/hot biome', 
+                            click_sound: 'default', rollover_sound: 'default'" data-placement="left">
+                                <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_lava.png">
+                            </button>
+                        </div>
+                        <div id="option-control" class="vertical">
+                            <button id="option-control-button" class="option btn-default"
+                                onclick="selectOption('option-group-biome',this,6)" data-bind="tooltip: '!LOC:Death star biome', 
+                            click_sound: 'default', rollover_sound: 'default'" data-placement="left">
+                                <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_metall.png">
+                            </button>
+                        </div>
+                        <div id="option-control" class="vertical">
+                            <button id="option-control-button" class="option btn-default"
+                                onclick="selectOption('option-group-biome',this,7)" data-bind="tooltip: '!LOC:Snow/ice biome', 
+                            click_sound: 'default', rollover_sound: 'default'" data-placement="left">
+                                <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_snow.png">
+                            </button>
+                        </div>
+                        <div id="option-control" class="vertical">
+                            <button id="option-control-button" class="option btn-default"
+                                onclick="selectOption('option-group-biome',this,8)" data-bind="tooltip: '!LOC:Random biome', 
+                            click_sound: 'default', rollover_sound: 'default'" data-placement="left">
+                                <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_random.png">
+                            </button>
+                        </div>
+                        <!-- <hr id="option-control-highlight" class="option" /> -->
                     </div>
                 </div>
             </div>
-            <hr class="vertical-split" />
-            <div id="option-group-biome" class="options-block-biome">
-                <div id="option-group-header" class="horizontal">
-                    <label id="option-group-name" class="option gap-small">Biome:</label>
-                    <label id="option-group-description" class="option description"></label>
-                </div>
-                <div id="option-set" class="horizontal options-grid">
-                    <div id="option-control" class="vertical">
-                        <button id="option-control-button" class="option btn-default"
-                            onclick="selectOption('option-group-biome',this,1)" data-bind="tooltip: '!LOC:Random biome', 
-                            click_sound: 'default', rollover_sound: 'default'" data-placement="right">
-                            <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_moon.png">
-                        </button>
-                    </div>
-                    <div id="option-control" class="vertical">
-                        <button id="option-control-button" class="option btn-default"
-                            onclick="selectOption('option-group-biome',this,2)" data-bind="tooltip: '!LOC:Random biome', 
-                            click_sound: 'default', rollover_sound: 'default'" data-placement="right">
-                            <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_asteroid.png">
-                        </button>
-                    </div>
-                    <div id="option-control" class="vertical">
-                        <button id="option-control-button" class="option btn-default"
-                            onclick="selectOption('option-group-biome',this,3)" data-bind="tooltip: '!LOC:Random biome', 
-                            click_sound: 'default', rollover_sound: 'default'" data-placement="right">
-                            <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_desert.png">
-                        </button>
-                    </div>
-                    <div id="option-control" class="vertical">
-                        <button id="option-control-button" class="option btn-default"
-                            onclick="selectOption('option-group-biome',this,4)" data-bind="tooltip: '!LOC:Random biome', 
-                            click_sound: 'default', rollover_sound: 'default'" data-placement="right">
-                            <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_forest.png">
-                        </button>
-                    </div>
-                    <div id="option-control" class="vertical">
-                        <button id="option-control-button" class="option btn-default"
-                            onclick="selectOption('option-group-biome',this,5)" data-bind="tooltip: '!LOC:Random biome', 
-                            click_sound: 'default', rollover_sound: 'default'" data-placement="right">
-                            <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_lava.png">
-                        </button>
-                    </div>
-                    <div id="option-control" class="vertical">
-                        <button id="option-control-button" class="option btn-default"
-                            onclick="selectOption('option-group-biome',this,6)" data-bind="tooltip: '!LOC:Random biome', 
-                            click_sound: 'default', rollover_sound: 'default'" data-placement="right">
-                            <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_metall.png">
-                        </button>
-                    </div>
-                    <div id="option-control" class="vertical">
-                        <button id="option-control-button" class="option btn-default"
-                            onclick="selectOption('option-group-biome',this,7)" data-bind="tooltip: '!LOC:Random biome', 
-                            click_sound: 'default', rollover_sound: 'default'" data-placement="right">
-                            <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_snow.png">
-                        </button>
-                    </div>
-                    <div id="option-control" class="vertical">
-                        <button id="option-control-button" class="option btn-default"
-                            onclick="selectOption('option-group-biome',this,8)" data-bind="tooltip: '!LOC:Random biome', 
-                            click_sound: 'default', rollover_sound: 'default'" data-placement="right">
-                            <img class="quad" src="coui://ui/mods/mod.map_generator/icons/biome_random.png">
-                        </button>
-                    </div>
-                    <!-- <hr id="option-control-highlight" class="option" /> -->
-                </div>
-            </div>
+            <button id="generate-planet-button" class="generate btn-default" data-bind="tooltip: '!LOC:Click to generate planet', 
+        click_sound: 'default', rollover_sound: 'default'" data-placement="bottom">
+                <label class="generate-planet-label">Generate Planet</label>
+            </button>
         </div>
-        <button id="generate-planet-button" class="generate btn-default" data-bind="tooltip: '!LOC:Random biome', 
-        click_sound: 'default', rollover_sound: 'default'" data-placement="right">
-            <label class="generate-planet-label">Generate Planet</label>
-        </button>
-
     </div>
 </body>
 <script>
-    ko.applyBindings(MapGeneratorModel,"#frame-body");
+    $().ready(function () {
+        // var dom_node = document.getElementById("frame-body");
+        // console.log(dom_node);
+        ko.applyBindings(MapGeneratorModel, document.getElementById("frame-body"));
+    })
 </script>
+
 </html>

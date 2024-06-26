@@ -1,7 +1,18 @@
 .frame {
     /* background: #252525; */
-    align-items: center;
+
     /* background: linear-gradient(135deg, rgba(60, 60, 60, 1) 0%, rgba(255, 255, 255, 0) 89%) !important; */
+}
+
+.map-generator-header {
+    font-family: "Sansation";
+    font-size: 13px;
+    text-transform: uppercase;
+    border-top: 1px solid #333;
+    color: #fff;
+    text-shadow: 0px 0px 20px #07959B;
+    margin-top: 5px;
+    padding-top: 2px;
 }
 
 .vertical {
@@ -12,6 +23,10 @@
 .horizontal {
     display: flex;
     flex-direction: row;
+}
+
+.centered {
+    align-items: center;
 }
 
 .options-container {
@@ -26,7 +41,7 @@
     flex-shrink: 0;
 }
 
-.options-block-biome{
+.options-block-biome {
     width: 100px;
 }
 
@@ -172,7 +187,7 @@ label.generate-planet-label {
     text-transform: uppercase;
 
     -webkit-animation:
-        pulsate 5s ease-in-out 0s alternate infinite none running;
+        pulsate 3s ease-in-out 0s alternate infinite none running;
 }
 
 @-webkit-keyframes pulsate {

@@ -63,70 +63,42 @@ const biome_description_map = [
     }
 ]
 
-// const option_group_handlers_map = [
-//     {
-//         id: 'option-group-planet_size',
-//         function: handle_planet_size_option
-//     },
-//     {
-//         id: 'option-group-metal',
-//         function: handle_metal_count_option
-//     },
-//     {
-//         id: 'option-group-biome',
-//         function: handle_biome_option
-//     }
-// ]
+const option_groups_map = [
+    {
+        id: 'option-group-planet_size'
+    },
+    {
+        id: 'option-group-metal'
+    },
+    {
+        id: 'option-group-biome'
+    }
+]
 
-function MapGeneratorModel(){
+function MapGeneratorModel() {
     var self = this;
 }
 
 MapGeneratorModel = new MapGeneratorModel();
 
-function getRandomSeed() {
-    return Math.floor(65536 * Math.random());
-}
-
-// min and max is inclusive (tatarstan)
-function getRandomInt(min, max) {
-
-    if (min == max)
-        return max;
-
-    min = Math.ceil(min);
-    max++; // make max inclusive (tatarstan)
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive (stackoverflow)
-}
-
-function getRandomIndex(length) {
-    return Math.floor(Math.random() * length);
-}
-
-function getRandomWeightedIndex(weights) {
-    var index;
-    for (index = 0; index < weights.length; index++)
-        weights[index] += weights[index - 1] || 0;
-
-    const random = Math.random() * weights[weights.length - 1];
-
-    for (index = 0; index < weights.length; index++)
-        if (weights[index] > random)
-            break;
-
-    // console.log('weighted random ' + index + ' : ' + random + ' : ' + weights)
-    return index;
-}
+const default_generation_options = [
+    {
+        group_id: 'option-group-planet_size',
+        option_value: 2
+    },
+    {
+        group_id: 'option-group-metal',
+        option_value: 2
+    },
+    {
+        group_id: 'option-group-biome',
+        option_value: 8
+    }
+]
 
 $(function () {
-    console.log("got jquery");
-    $.get("coui://ui/mods/mod.map_generator/map_generator.html", function (html) {
-        console.log("got html");
-        $('#system').append(html);
-        console.log("appended html");
-    })
-
+    // 3 sec delay jquery
+    awake();
     return
 
     $('head').append('<link rel="stylesheet" href="coui://ui/mods/map-generator/map_generator.css" type="text/css" />');
@@ -221,6 +193,77 @@ $(function () {
 
 })
 
+function awake() {
+    // APPEND HTML
+    $.get("coui://ui/mods/mod.map_generator/map_generator.html", function (html) {
+        $('#system').append(html);
+    })
+}
+
+// called from initialized html
+function start() {
+    var modification_data = load_modification_data_from_localStore();
+    if (modification_data == null) {
+        modification_data = create_default_modification_data();
+        save_modification_data_to_localStore(modification_data);
+    }
+
+    select_user_or_default_options(_.cloneDeep(modification_data));
+
+    console.log(modification_data)
+}
+
+function select_user_or_default_options(modification_data) {
+    $().ready(function () {
+        for (var i = 0; i < option_groups_map.length; i++) {
+            var option_group_id = option_groups_map[i].id;
+            var what_to_select_data = undefined;
+
+            if (modification_data != null) {
+                what_to_select_data = _.find(modification_data.options, { group_id: option_group_id });
+            }
+
+            var default_option_value_for_group =
+                _.find(default_generation_options, { group_id: option_group_id });
+
+            if (default_option_value_for_group === undefined) {
+                default_option_value_for_group = {
+                    group_id: option_group_id,
+                    option_value: 1
+                }
+            }
+
+            if (what_to_select_data === undefined) {
+                what_to_select_data = {
+                    group_id: option_group_id,
+                    option_value: default_option_value_for_group.option_value
+                }
+                modification_data.options.push(what_to_select_data)
+            }
+
+            // console.log(option_group_id)
+            var option_group = $('#' + option_group_id);
+            // console.log(option_group[0])
+            // console.log($(option_group).find("#option-group-header")[0])
+            var option_set = $(option_group).find("#option-set");
+            // console.log(option_set[0])
+            // console.log(what_to_select_data)
+            option_set.children("#option-control").each(function (index, option_control) {
+                // im using "option_value - 1" cause buttons values and index correspond to each other
+                if (index === what_to_select_data.option_value - 1) {
+                    var option_button_element = $(option_control).find("#option-control-button")[0];
+                    console.log("selecting " + option_group_id + " " + what_to_select_data.option_value);
+                    selectOption(option_group_id, option_button_element, what_to_select_data.option_value);
+                }
+                // console.log(index)
+                // console.log(jquery_element);
+            })
+        }
+
+        save_modification_data_to_localStore(modification_data)
+    })
+}
+
 function selectOption(option_group_id, option_button, option_value) {
     $().ready(function () {
         var option_group = $('#' + option_group_id);
@@ -228,14 +271,15 @@ function selectOption(option_group_id, option_button, option_value) {
 
         var option_set = option_group.find("#option-set");
 
+        // console.log(option_button);
         // console.log("option set");
         // console.log(option_set[0]);
-        option_set.children("#option-control").each(function (index, element) {
+        option_set.children("#option-control").each(function (index, jquery_element) {
             // console.log(element);
             // element is $(this)
-            var button = $(element).find("#option-control-button");
-            var highlight = $(element).find("#option-control-highlight");
-            
+            var button = $(jquery_element).find("#option-control-button");
+            var highlight = $(jquery_element).find("#option-control-highlight");
+
             // add highlight or remove
             // im using button[0] because button is a jquery object and the first element is the vanilla button
             // console.log(button[0]);
@@ -244,7 +288,10 @@ function selectOption(option_group_id, option_button, option_value) {
                 $(button).addClass(style_option_selected).blur();
                 $(button).children('img').addClass(style_option_selected);
                 $(highlight).addClass(style_option_selected);
+
+                update_modification_data_options(option_group_id, option_value);
             } else {
+                // console.log("not found");
                 $(button).removeClass(style_option_selected).blur();
                 $(button).children('img').removeClass(style_option_selected);
                 $(highlight).removeClass(style_option_selected);
@@ -258,7 +305,13 @@ function selectOption(option_group_id, option_button, option_value) {
             option_group_description.html(option_data.description);
         }
     })
+}
 
+function update_modification_data_options(options_group_id, option_value) {
+    var modification_data = load_modification_data_from_localStore();
+    var option_group_data = _.find(modification_data.options, { group_id: options_group_id });
+    option_group_data.option_value = option_value;
+    save_modification_data_to_localStore(modification_data)
 }
 
 // option_data example
@@ -273,7 +326,7 @@ function handle_option(option_group_id, option_value) {
     if (option_group_id == "option-group-metal") {
         return handle_metal_count_option(option_value);
     }
-    if(option_group_id == "option-group-biome"){
+    if (option_group_id == "option-group-biome") {
         return handle_biome_option(option_value);
     }
 
@@ -281,25 +334,61 @@ function handle_option(option_group_id, option_value) {
 }
 
 function handle_planet_size_option(option_value) {
-    var option_description = _.find(planet_size_description_map, {value: option_value}).description;
+    var option_description = _.find(planet_size_description_map, { value: option_value }).description;
 
     return {
         description: option_description
     }
 }
 function handle_metal_count_option(option_value) {
-    var option_description = _.find(metal_count_description_map, {value: option_value}).description;
+    var option_description = _.find(metal_count_description_map, { value: option_value }).description;
 
     return {
         description: option_description
     }
 }
 function handle_biome_option(option_value) {
-    var option_description = _.find(biome_description_map, {value: option_value}).description;
+    var option_description = _.find(biome_description_map, { value: option_value }).description;
     // console.log(option_value+" "+option_description)
     return {
         description: option_description
     }
+}
+
+
+function getRandomSeed() {
+    return Math.floor(65536 * Math.random());
+}
+
+// min and max is inclusive (tatarstan)
+function getRandomInt(min, max) {
+
+    if (min == max)
+        return max;
+
+    min = Math.ceil(min);
+    max++; // make max inclusive (tatarstan)
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive (stackoverflow)
+}
+
+function getRandomIndex(length) {
+    return Math.floor(Math.random() * length);
+}
+
+function getRandomWeightedIndex(weights) {
+    var index;
+    for (index = 0; index < weights.length; index++)
+        weights[index] += weights[index - 1] || 0;
+
+    const random = Math.random() * weights[weights.length - 1];
+
+    for (index = 0; index < weights.length; index++)
+        if (weights[index] > random)
+            break;
+
+    // console.log('weighted random ' + index + ' : ' + random + ' : ' + weights)
+    return index;
 }
 // TEMPLATES
 // function generateSmall() {
@@ -523,6 +612,17 @@ function handle_biome_option(option_value) {
 //     });
 // }
 
-$(function () {
-    console.log("map generator loaded")
-})
+function save_modification_data_to_localStore(modification_data) {
+    localStorage.setItem('map_generator_data', JSON.stringify(modification_data));
+}
+
+function load_modification_data_from_localStore() {
+    var modification_data = JSON.parse(localStorage.getItem('map_generator_data'));
+    return modification_data;
+}
+
+function create_default_modification_data() {
+    return {
+        options: []
+    }
+}

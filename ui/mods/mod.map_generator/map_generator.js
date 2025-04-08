@@ -23,63 +23,63 @@ const style_option_selected = 'selected';
 const planet_size_description_map = [
     {
         value: 1,
-        description: 'small'
+        name: 'small'
     },
     {
         value: 2,
-        description: 'medium'
+        name: 'medium'
     },
     {
         value: 3,
-        description: 'large'
+        name: 'large'
     }
 ]
 const metal_count_description_map = [
     {
         value: 1,
-        description: 'poor'
+        name: 'poor'
     },
     {
         value: 2,
-        description: 'normal'
+        name: 'normal'
     },
     {
         value: 3,
-        description: 'rich'
+        name: 'rich'
     }
 ]
-const biome_description_map = [
+const biome_map = [
     {
         value: 1,
-        description: 'moon'
+        name: 'moon'
     },
     {
         value: 2,
-        description: 'asteroid'
+        name: 'asteroid'
     },
     {
         value: 3,
-        description: 'desert'
+        name: 'desert'
     },
     {
         value: 4,
-        description: 'forest'
+        name: 'forest'
     },
     {
         value: 5,
-        description: 'lava'
+        name: 'lava'
     },
     {
         value: 6,
-        description: 'metallic'
+        name: 'metallic'
     },
     {
         value: 7,
-        description: 'snow'
+        name: 'snow'
     },
     {
         value: 8,
-        description: 'random'
+        name: 'random'
     }
 ]
 
@@ -230,7 +230,7 @@ function selectOption(option_group_id, option_button, option_value) {
         var option_group_description = $(option_group).find("#option-group-description");
         // console.log(option_data);
         if (option_data !== undefined) {
-            option_group_description.html(option_data.description);
+            option_group_description.html(option_data.name);
         }
     })
 }
@@ -264,24 +264,24 @@ function handle_option(option_group_id, option_value) {
 }
 
 function handle_planet_size_option(option_value) {
-    var option_description = _.find(planet_size_description_map, { value: option_value }).description;
+    var option_description = _.find(planet_size_description_map, { value: option_value }).name;
 
     return {
-        description: option_description
+        name: option_description
     }
 }
 function handle_metal_count_option(option_value) {
-    var option_description = _.find(metal_count_description_map, { value: option_value }).description;
+    var option_description = _.find(metal_count_description_map, { value: option_value }).name;
 
     return {
-        description: option_description
+        name: option_description
     }
 }
 function handle_biome_option(option_value) {
-    var option_description = _.find(biome_description_map, { value: option_value }).description;
+    var option_description = _.find(biome_map, { value: option_value }).name;
     // console.log(option_value+" "+option_description)
     return {
-        description: option_description
+        name: option_description
     }
 }
 
@@ -300,14 +300,69 @@ const biomes_id_list = [
     "tropical_lite", // Tropical
     "moon_lite", // Moon
     "asteroid", // Asteroid
-    "sandbox" // Sandbox
+    "sandbox", // Sandbox
+    "metal"
 ];
 
 
 
 function generate() {
-    getRandomSystem('Generated', get_generation_size(), get_random_biome_id(), get_metal_density(),
-        get_additional_surface_parameters(undefined, undefined, undefined)).then(function (system) {
+
+    // TODO: use biome generation option
+    const biome = get_generation_biome();
+    var biome_id;
+    var temperature;
+
+    switch (biome.name) {
+        case 'moon':
+            // Handle moon biome
+            biome_id = 'moon_lite';
+            break;
+        case 'asteroid':
+            // Handle asteroid biome
+            biome_id = 'asteroid';
+            break;
+        case 'desert':
+            // Handle desert biome
+            biome_id = 'desert_lite';
+            break;
+        case 'forest':
+            // Handle forest biome
+            temperature = _math.random_integer(35, 65)
+            if (temperature < 50) {
+                biome_id = 'earth_lite';
+            } else {
+                biome_id = 'tropical_lite';
+            }
+            break;
+        case 'lava':
+            // Handle lava biome
+            biome_id = 'lava_lite';
+            break;
+        case 'metallic':
+            // Handle metallic biome
+            biome_id = 'metal';
+            break;
+        case 'snow':
+            // Handle snow biome
+            biome_id = 'earth_lite';
+            temperature = _math.random_integer(0, 0)
+            break;
+        case 'random':
+            // Handle random biome
+            biome_id = get_random_biome_id();
+            break;
+        default:
+            // Handle unknown biome
+            biome_id = get_random_biome_id();
+            break;
+    }
+
+    console.log(biome);
+    console.log(biome_id);
+
+    getRandomSystem('Generated', get_generation_size(), biome_id, get_metal_density(),
+        get_additional_surface_parameters(temperature, undefined, undefined)).then(function (system) {
             model.system(system);
             model.updateSystem(model.system());
             model.changeSettings();
@@ -642,7 +697,7 @@ function getRandomSystem(planet_title, planet_size, biomeName, base_metal_densit
              */
             var theta =
                 (i * 2 * Math.PI) / asteroid_count + // Base angle for even spacing
-                (_math.random_integer(0, theta_derivation_degrees)*_math.random_sign() * Math.PI / 180); // Add random deviation
+                (_math.random_integer(0, theta_derivation_degrees) * _math.random_sign() * Math.PI / 180); // Add random deviation
 
             console.log("theta: " + theta + " i*2*Math.PI: " + (i * 2 * Math.PI)
                 + " asteroid_count: " + asteroid_count +
@@ -754,5 +809,15 @@ function get_generation_biome_option() {
         return _.find(default_generation_options, { group_id: 'option-group-biome' }).option_value;
     else
         return biome.option_value;
+}
+
+function get_generation_biome() {
+    const selected_option_number = get_generation_biome_option();
+    const selected_option_name = _.find(biome_map, { value: selected_option_number }).name;
+
+    return {
+        name: selected_option_name,
+        value: selected_option_number
+    }
 }
 

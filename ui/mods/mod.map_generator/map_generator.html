@@ -158,9 +158,23 @@
 </body>
 <script>
     $().ready(function () {
-        // var dom_node = document.getElementById("frame-body");
-        // console.log(dom_node);
-        ko.applyBindings(MapGeneratorModel, document.getElementById("frame-body"));
+
+        // I dont use binginds cause  map_generator.js is loaded in context of new_game as this html. 
+        // so this html can clearly see all functions defined in map_generator.js 
+        // and other mods too, i think :)
+        // ko.applyBindings(MapGeneratorModel, document.getElementById("frame-body"));
+
+        // MapGeneratorModel is a variable (class) defined in map_generator.js
+        // MapGeneratorModel{
+        //     var self = this;
+        // }
+        // MapGeneratorModel = new MapGeneratorModel(); 
+
+        // that should be used to incapsulate functions in it, 
+        // but i dont want to do it that way,
+        // so all functions exposed
+
+        // just call it straightly
         start();
     })
 </script>

@@ -1,3 +1,23 @@
+// Посмотреть premade_systems.js Там описаны все свойства планет, которые можно определить при генерации.
+// ____________________________________________________________________
+// We need to load the other modules (files) in the context of
+// `tatapstar_map_generator` instead of `main` so that we can use relative
+// paths to the other files.
+//
+// The context is automatically set to `main` when the game is loaded, and
+// all scripts are loaded in the context of `main`.
+//
+// We need to load `math.js` in the context of `tatapstar_map_generator` so
+// that we can use relative paths to load the other files.
+const require_other_files = require.config({
+    context: "tatapstar_map_generator",
+    waitSeconds: 0,
+    baseUrl: 'coui://ui/mods/mod.map_generator'
+});
+
+// modules
+var _math;
+var _data;
 
 const style_option_selected = 'selected';
 const planet_size_description_map = [
@@ -90,122 +110,30 @@ const default_generation_options = [
     }
 ]
 
-function MapGeneratorModel() {
-    var self = this;
-}
-
-MapGeneratorModel = new MapGeneratorModel();
-
 $(function () {
-    // 3 sec delay jquery
     awake();
     return
-
-    $('head').append('<link rel="stylesheet" href="coui://ui/mods/map-generator/map_generator.css" type="text/css" />');
-
-    var root = $('.system-options');
-    var templatesRoot = $('<div id="ap-controls" class="box_highlight" data-bind="visible: canChangeSettings"></div>');
-    // insert our panel to system options
-
-    root.append(templatesRoot);
-
-    ko.applyBindings(model, templatesRoot[0]);
-
-    var table = $('<table></table>');
-
-    var lastRow;
-
-    var addToTable = function (element) {
-        var row = $('<tr></tr>');
-        var data = $('<td class="td"></td>');
-        data.append(element);
-        row.append(data)
-        table.append(row);
-
-        lastRow = row;
-    }
-    // Not working correctly (binding)
-    var addToTableRow = function (element) {
-        var data = $('<td class="td"></td>');
-        data.append(element);
-        lastRow.append(data);
-        console.log("row is")
-        console.log(lastRow[0])
-    }
-
-    function applyBindingsToLastRow() {
-        ko.applyBindings(model, lastRow[0]);
-    }
-
-    var createButton = function (name, method) {
-        var button = $(
-            '<div class="btn_std_gray" data-bind="click: ' + method + '">' +
-            '<div class="btn_std_label">' + name + '</div>' +
-            '</div>');
-
-        // ko.applyBindings(model, button[0])
-        return button;
-    }
-
-
-    // templatesRoot.append($('<hr/>'))
-    templatesRoot.append($('<label class="section_title_main"><b>Generate Planet</b></label>'))
-    templatesRoot.append(table);
-
-    // addToTable(button);
-    var duelContainer = $('<div></div>')
-    var duelButton = createButton('Small', 'generateSmall');
-    var duelButton2 = createButton('Medium', 'generateMedium');
-    var duelButton3 = createButton('Large', 'generateLarge');
-    duelContainer.append(duelButton);
-    duelContainer.append(duelButton2);
-    duelContainer.append(duelButton3);
-
-    // var arenaContainer = $('<div></div>')
-    // var arenaButton = createButton('Small', 'generateBerserk');
-    // var arenaButton2 = createButton('Medium', 'generateArena');
-    // var arenaButton3 = createButton('Large', 'generateBattlefield');
-    // arenaContainer.append(arenaButton);
-    // arenaContainer.append(arenaButton2);
-    // arenaContainer.append(arenaButton3);
-
-    var specificContainer = $('<div></div>')
-    var comboxButton = createButton("Combox", "generateCombox")
-    var wadiyaButton = createButton("Wadiya", "generateWadiya")
-    var wateriyaButton = createButton("Wateriya", "generateWateriya")
-    specificContainer.append(comboxButton)
-    specificContainer.append(wadiyaButton)
-    specificContainer.append(wateriyaButton)
-
-
-    addToTable($('<label class="section_title_inner_duel"><b>Template:</b></label>'))
-    addToTableRow(duelContainer)
-    applyBindingsToLastRow()
-    // addToTable($('<label class="section_title_inner_arena"><b>FFA:</b></label>'))
-    // addToTable(arenaContainer)
-    addToTable($('<label class="section_title_inner_wadiya"><b>Specific:</b></label>'))
-    addToTableRow(specificContainer)
-    applyBindingsToLastRow()
-
-    //ko.applyBindings(model, duelContainer);
-    // ko.applyBindings(model, arenaContainer);
-    //ko.applyBindings(model, specificContainer);
-
 })
 
 function awake() {
-    // APPEND HTML
-    $.get("coui://ui/mods/mod.map_generator/map_generator.html", function (html) {
-        $('#system').append(html);
+    // loading modules first to ensure they are loaded
+    require_other_files(['./math', './data'], function (math, data) {
+        _math = math;
+        _data = data;
+
+        // APPEND HTML
+        $.get("coui://ui/mods/mod.map_generator/map_generator.html", function (html) {
+            $('#system').append(html);
+        })
     })
 }
 
 // called from initialized html
 function start() {
-    var modification_data = load_modification_data_from_localStore();
+    var modification_data = _data.load();
     if (modification_data == null) {
-        modification_data = create_default_modification_data();
-        save_modification_data_to_localStore(modification_data);
+        modification_data = _data.create_empty();
+        _data.save(modification_data);
     }
 
     select_user_or_default_options(_.cloneDeep(modification_data));
@@ -260,7 +188,7 @@ function select_user_or_default_options(modification_data) {
             })
         }
 
-        save_modification_data_to_localStore(modification_data)
+        _data.save(modification_data)
     })
 }
 
@@ -315,10 +243,10 @@ function selectOption(option_group_id, option_button, option_value) {
  */
 
 function update_modification_data_options(options_group_id, option_value) {
-    var modification_data = load_modification_data_from_localStore();
+    var modification_data = _data.load();
     var option_group_data = _.find(modification_data.options, { group_id: options_group_id });
     option_group_data.option_value = option_value;
-    save_modification_data_to_localStore(modification_data)
+    _data.save(modification_data)
 }
 
 function handle_option(option_group_id, option_value) {
@@ -357,98 +285,6 @@ function handle_biome_option(option_value) {
     }
 }
 
-
-function getRandomSeed() {
-    return Math.floor(65536 * Math.random());
-}
-
-// min and max is inclusive (tatarstan)
-function get_random_integer(min, max) {
-
-    if (min == max)
-        return max;
-
-    min = Math.ceil(min);
-    max++; // make max inclusive (tatarstan)
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive (stackoverflow)
-}
-
-function get_random_index_by_length(length) {
-    return Math.floor(Math.random() * length);
-}
-
-function getRandomWeightedIndex(weights) {
-    var index;
-    for (index = 0; index < weights.length; index++)
-        weights[index] += weights[index - 1] || 0;
-
-    const random = Math.random() * weights[weights.length - 1];
-
-    for (index = 0; index < weights.length; index++)
-        if (weights[index] > random)
-            break;
-
-    // console.log('weighted random ' + index + ' : ' + random + ' : ' + weights)
-    return index;
-}
-// TEMPLATES
-// function generateSmall() {
-//     console.log("fuck")
-//     getRandomSystem('Small', [400, 500], getRandomBiome(), [30, 30]).then(function (system) {
-//         model.system(system);
-//         model.updateSystem(model.system());
-//         model.changeSettings();
-//         model.requestUpdateCheatConfig();
-//     });
-// }
-// function generateMedium() {
-//     getRandomSystem('Medium', [500, 700], getRandomBiome(), [30, 40]).then(function (system) {
-//         model.system(system);
-//         model.updateSystem(model.system());
-//         model.changeSettings();
-//         model.requestUpdateCheatConfig();
-//     });
-// }
-// function generateLarge() {
-//     getRandomSystem('Large', [700, 1300], getRandomBiome(), [40, 50]).then(function (system) {
-//         model.system(system);
-//         model.updateSystem(model.system());
-//         model.changeSettings();
-//         model.requestUpdateCheatConfig();
-//     });
-// }
-
-
-// function generateCombox() {
-//     getRandomSystem('Combox', [150, 350], getRandomBiome(), [100, 100],
-//         createGenerationOptions(undefined, undefined, getRandomInt(40, 70))).then(function (system) {
-//             model.system(system);
-//             model.updateSystem(model.system());
-//             model.changeSettings();
-//             model.requestUpdateCheatConfig();
-//         })
-// }
-// function generateWadiya() {
-//     getRandomSystem('Wadiya', [600, 800], moonBiome, [80, 100],
-//         createGenerationOptions(undefined, 0, undefined)).then(function (system) {
-//             model.system(system);
-//             model.updateSystem(model.system());
-//             model.changeSettings();
-//             model.requestUpdateCheatConfig();
-//         })
-// }
-// function generateWateriya() {
-//     getRandomSystem('Wateriya', [600, 800], getRandomBiome([earthBiome, tropicalBiome]), [80, 100],
-//         createGenerationOptions(undefined, 70, undefined)).then(function (system) {
-//             model.system(system);
-//             model.updateSystem(model.system());
-//             model.changeSettings();
-//             model.requestUpdateCheatConfig();
-//         })
-// }
-// // TEMPLATES END
-
 // PLANET GENERATION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // PLANET GENERATION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // PLANET GENERATION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -483,7 +319,7 @@ function generate() {
 function get_generation_size(value) {
     if (value != undefined) {
         if (value.constructor == Array) {
-            return get_random_integer(value[0], value[1]);
+            return _math.random_integer(value[0], value[1]);
         } else {
             return value
         }
@@ -494,12 +330,12 @@ function get_generation_size(value) {
         return 404
     } else {
         if (size_option == 1) {
-            return get_random_integer(400, 500)
+            return _math.random_integer(400, 500)
         } else if (size_option == 2) {
-            return get_random_integer(500, 650)
+            return _math.random_integer(500, 650)
         }
         else if (size_option == 3) {
-            return get_random_integer(650, 900)
+            return _math.random_integer(650, 900)
         }
     }
 }
@@ -527,9 +363,9 @@ function get_biome_id(biomes) {
 function get_random_biome_id(biomes) {
     if (biomes == undefined) {
         biomes = get_all_possible_biomes_list();
-        return biomes[get_random_index_by_length(biomes.length)];
+        return biomes[_math.random_index(biomes.length)];
     } else if (biomes.constructor == Array) {
-        return biomes[get_random_index_by_length(biomes.length)];
+        return biomes[_math.random_index(biomes.length)];
     }
     return biomes;
 }
@@ -555,7 +391,7 @@ function get_all_possible_biomes_list() {
 function get_metal_density(value) {
     if (value != undefined) {
         if (value.constructor == Array) {
-            return get_random_integer(value[0], value[1]);
+            return _math.random_integer(value[0], value[1]);
         } else {
             return value
         }
@@ -565,11 +401,11 @@ function get_metal_density(value) {
         return 0
     } else {
         if (metal_option == 1) {
-            return get_random_integer(15, 20)
+            return _math.random_integer(15, 20)
         } else if (metal_option == 2) {
-            return get_random_integer(20, 30)
+            return _math.random_integer(20, 30)
         } else if (metal_option == 3) {
-            return get_random_integer(30, 40)
+            return _math.random_integer(30, 40)
         }
     }
 }
@@ -618,11 +454,11 @@ function get_random_water_percentage() {
     // }
     // console.log('rand-' + r + ' no-' + n + ' much-' + m)
 
-    const type = types[getRandomWeightedIndex([70, 10, 20])]
+    const type = types[_math.random_weighted_index([70, 10, 20])]
     switch (type) {
-        case "random": return get_random_integer(25, 40); break;
+        case "random": return _math.random_integer(25, 40); break;
         case "nowater": return 0; break;
-        case "muchwater": return get_random_integer(40, 70); break;
+        case "muchwater": return _math.random_integer(40, 70); break;
     }
 
     return 0
@@ -639,11 +475,11 @@ function get_random_water_percentage() {
  */
 function get_additional_surface_parameters(temperature_0_100, waterDepth_0_70, height_20_60) {
     if (temperature_0_100 == undefined)
-        temperature_0_100 = get_random_integer(0, 100)
+        temperature_0_100 = _math.random_integer(0, 100)
     if (waterDepth_0_70 == undefined)
         waterDepth_0_70 = get_random_water_percentage();
     if (height_20_60 == undefined)
-        height_20_60 = get_random_integer(20, 60);
+        height_20_60 = _math.random_integer(20, 60);
     return { temperature: temperature_0_100, waterDepth: waterDepth_0_70, height: height_20_60 }
 }
 
@@ -659,7 +495,7 @@ function getRandomSystem(planet_title, planet_size, biomeName, base_metal_densit
     console.log(biomeName + ' passed to the generation')
 
     // Gameplay
-    var seed = getRandomSeed();
+    var seed = _math.new_seed();
 
     // Planet surface
     const temperature = additional_surface_parameters.temperature;
@@ -693,7 +529,7 @@ function getRandomSystem(planet_title, planet_size, biomeName, base_metal_densit
             waterDepth: 50,
             temperature: temperature,
             // i dont know what biomeScale does
-            biomeScale: get_random_integer(50, 100),
+            biomeScale: _math.random_integer(50, 100),
             metalDensity: metal_calculation.metalDensity,
             metalClusters: metal_calculation.metalClusters,
             landingZoneSize: landingZoneSize,
@@ -717,7 +553,7 @@ function getRandomSystem(planet_title, planet_size, biomeName, base_metal_densit
     var planets = [planet];
 
     // Generate asteroids
-    const orbit_from_planet = get_random_integer(4000,7000)
+    const orbit_from_planet = _math.random_integer(4000, 7000)
     planets = generate_asteroids(planets, orbit_from_planet)
 
     var pgen = _.map(planets, function (plnt, index) {
@@ -777,7 +613,7 @@ function getRandomSystem(planet_title, planet_size, biomeName, base_metal_densit
     function generate_asteroids(planets, orbit_from_planet) {
         // Константы для генерации астероидов
         // Генерация случайного количества астероидов (0–4)
-        const asteroid_count = get_random_integer(0, 4);
+        const asteroid_count = _math.random_integer(0, 4);
         const radius_min = 150;                // Минимальный радиус астероида
         const radius_max = 400;               // Максимальный радиус астероида
         const metalDensityMin = 2;          // Минимальная плотность металла
@@ -787,23 +623,39 @@ function getRandomSystem(planet_title, planet_size, biomeName, base_metal_densit
         const fixedMassAsteroid = 5000;      // Фиксированная масса астероида
         const G = 1;                         // Предполагаемая гравитационная постоянная
 
+        const theta_derivation_degrees = 45;
+
         // Цикл для создания каждого астероида
         for (var i = 0; i < asteroid_count; i++) {
-            // Случайный угол для позиции астероида на орбите (0–2π)
-            // var theta = (i * 2 * Math.PI) / asteroid_count;
-            var theta = (i * 2 * Math.PI) / asteroid_count + (Math.PI / asteroid_count) - (radius_max / orbit_from_planet);
+
+            /**
+             * Calculate the angle theta for asteroid positioning.
+             * 
+             * The angle is calculated based on the index of the asteroid, 
+             * the total count of asteroids, and a random deviation in degrees.
+             * This ensures asteroids are evenly spaced with some variation.
+             *
+             * @param {number} i - The index of the current asteroid.
+             * @param {number} asteroid_count - The total number of asteroids.
+             * @param {number} theta_derivation_degrees - The degree deviation for randomness.
+             * @returns {number} theta - The calculated angle in radians.
+             */
+            var theta =
+                (i * 2 * Math.PI) / asteroid_count + // Base angle for even spacing
+                (_math.random_integer(0, theta_derivation_degrees)*_math.random_sign() * Math.PI / 180); // Add random deviation
+
             console.log("theta: " + theta + " i*2*Math.PI: " + (i * 2 * Math.PI)
-                + " asteroid_count: " + asteroid_count + 
+                + " asteroid_count: " + asteroid_count +
                 " divide: " + (i * 2 * Math.PI) / asteroid_count);
 
             // Генерация радиуса с меньшей вероятностью больших значений (логарифмическое распределение)
             var radius = Math.exp(Math.random() * Math.log(radius_max / radius_min)) * radius_min;
-            
+
             // Случайная плотность металла в диапазоне [15, 30]
-            var metal_density = get_random_integer(metalDensityMin, metalDensityMax);
+            var metal_density = _math.random_integer(metalDensityMin, metalDensityMax);
 
             // Случайное значение required_thrust_to_move в диапазоне [0, 2]
-            var requiredThrustToMove = get_random_integer(requiredThrustToMoveMin, requiredThrustToMoveMax);
+            var requiredThrustToMove = _math.random_integer(requiredThrustToMoveMin, requiredThrustToMoveMax);
 
             // Расчет орбитальной скорости для круговой орбиты: v = sqrt(G * M / d)
             var orbitalSpeed = Math.sqrt(G * planets[0].mass / orbit_from_planet);
@@ -872,7 +724,7 @@ function getRandomSystem(planet_title, planet_size, biomeName, base_metal_densit
  * @returns {number} The planet size option value.
  */
 function get_generation_size_option() {
-    const size = _.find(get_options(), { group_id: 'option-group-planet_size' });
+    const size = _.find(_data.get_options(), { group_id: 'option-group-planet_size' });
     if (size == undefined)
         return _.find(default_generation_options, { group_id: 'option-group-planet_size' }).option_value;
     else
@@ -885,7 +737,7 @@ function get_generation_size_option() {
  * @returns {number} The metal option value.
  */
 function get_generation_metal_option() {
-    const metal = _.find(get_options(), { group_id: 'option-group-metal' });
+    const metal = _.find(_data.get_options(), { group_id: 'option-group-metal' });
     if (metal == undefined)
         return _.find(default_generation_options, { group_id: 'option-group-metal' }).option_value;
     else
@@ -897,48 +749,10 @@ function get_generation_metal_option() {
  * @returns {number} The biome option value.
  */
 function get_generation_biome_option() {
-    const biome = _.find(get_options(), { group_id: 'option-group-biome' });
+    const biome = _.find(_data.get_options(), { group_id: 'option-group-biome' });
     if (biome == undefined)
         return _.find(default_generation_options, { group_id: 'option-group-biome' }).option_value;
     else
         return biome.option_value;
 }
 
-function save_modification_data_to_localStore(modification_data) {
-    localStorage.setItem('map_generator_data', JSON.stringify(modification_data));
-}
-
-/**
- * Loads the modification data from local storage and returns it. If the data does not exist in local storage, it returns undefined.
- * @returns {Object} The modification data or undefined if it does not exist in local storage.
- */
-function load_modification_data_from_localStore() {
-    var modification_data = JSON.parse(localStorage.getItem('map_generator_data'));
-    console.log(modification_data);
-    return modification_data;
-}
-
-/**
- * Retrieves the current modification options from local storage. 
- * If no valid modification data is found, initializes and returns default options.
- * 
- * @returns {Array} The list of option objects, either from modification data or default options.
- */
-
-function get_options() {
-    const modification_data = load_modification_data_from_localStore();
-    if (modification_data == undefined || modification_data.options == undefined || modification_data.options.length == 0) {
-        const default_modification_data = create_default_modification_data();
-        default_modification_data.options = default_generation_options;
-        save_modification_data_to_localStore(default_modification_data);
-        return default_modification_data.options;
-    } else {
-        return modification_data.options;
-    }
-}
-
-function create_default_modification_data() {
-    return {
-        options: []
-    }
-}

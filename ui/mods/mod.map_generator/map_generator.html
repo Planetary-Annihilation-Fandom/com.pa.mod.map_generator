@@ -153,8 +153,13 @@
 
             </div>
 
-            <button id="generate-planet-button" class="generate btn-default" data-bind="tooltip: '!LOC:Click to generate planet', 
-        click_sound: 'default', rollover_sound: 'default'" data-placement="bottom" , onclick="generate()">
+            <button id="generate-planet-button" class="generate btn-default" 
+            data-bind="
+                tooltip: '!LOC:Click to generate planet', 
+                click_sound: 'default', 
+                rollover_sound: 'default',
+                click: test_view_model"
+            data-placement="bottom">
                 <label class="generate-planet-label">Generate Planet</label>
             </button>
         </div>
@@ -182,7 +187,12 @@
         start();
 
         // use bindings mechanism to enable tooltips
-        ko.applyBindings(document.getElementById("frame-body"));
+        ko.applyBindings(
+            _view.view_model, // view_model is a class defined in view.js. And we call its constructor here to instantiate it
+            document.getElementById("frame-body")
+        );
+
+        _view.view_model.test_view_model();
     })
 </script>
 

@@ -9,13 +9,20 @@
 //
 // We need to load `math.js` in the context of `tatapstar_map_generator` so
 // that we can use relative paths to load the other files.
-const require_other_files = require.config({
+const require_mod_modules = require.config({
     context: "tatapstar_map_generator",
     waitSeconds: 0,
-    baseUrl: 'coui://ui/mods/mod.map_generator'
+    baseUrl: 'coui://ui/mods/mod.map_generator',
+
+    paths: {
+        // The text module is used to load text files.
+        // The path to the text module is thirdparty/requirejs-textplugin/text.
+        text: 'thirdparty/requirejs-textplugin/text',
+    }
 });
 
 // modules
+var _view;
 var _math;
 var _data;
 var _planetnames;
@@ -118,15 +125,18 @@ $(function () {
 
 function awake() {
     // loading modules first to ensure they are loaded
-    require_other_files(['./math', './data', './scripts/planetnames'], function (math, data, planetnames) {
+    require_mod_modules(['./view','./math', './data', './scripts/planetnames'], function (view,math, data, planetnames) {
+        _view = view;
         _math = math;
         _data = data;
         _planetnames = planetnames;
 
+        $('#system').append(_view.html);
+
         // APPEND HTML
-        $.get("coui://ui/mods/mod.map_generator/map_generator.html", function (html) {
-            $('#system').append(html);
-        })
+        // $.get("coui://ui/mods/mod.map_generator/map_generator.html", function (html) {
+        //     $('#system').append(html);
+        // })
     })
 }
 

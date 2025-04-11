@@ -148,9 +148,13 @@
                     </div>
                 </div>
             </div>
+
+            <div class="options-container horizontal">
+
+            </div>
+
             <button id="generate-planet-button" class="generate btn-default" data-bind="tooltip: '!LOC:Click to generate planet', 
-        click_sound: 'default', rollover_sound: 'default'" data-placement="bottom",
-                onclick="generate()">
+        click_sound: 'default', rollover_sound: 'default'" data-placement="bottom" , onclick="generate()">
                 <label class="generate-planet-label">Generate Planet</label>
             </button>
         </div>
@@ -174,8 +178,11 @@
         // but i dont want to do it that way,
         // so all functions exposed
 
-        // just call it straightly
+        // just call it straightly cause it is in a window scope/context
         start();
+
+        // use bindings mechanism to enable tooltips
+        ko.applyBindings(document.getElementById("frame-body"));
     })
 </script>
 

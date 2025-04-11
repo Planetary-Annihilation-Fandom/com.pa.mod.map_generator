@@ -608,8 +608,8 @@ function getRandomSystem(planet_title, planet_size, biomeName, base_metal_densit
     var planets = [planet];
 
     // Generate asteroids
-    const orbit_from_planet = _math.random_integer(4000, 7000)
-    planets = generate_asteroids(planets, orbit_from_planet)
+    // const orbit_from_planet = _math.random_integer(4000, 7000)
+    // planets = generate_asteroids(planets, orbit_from_planet)
 
     var pgen = _.map(planets, function (plnt, index) {
         var biomeGet = $.getJSON('coui://pa/terrain/' + plnt.planet.biome + '.json')

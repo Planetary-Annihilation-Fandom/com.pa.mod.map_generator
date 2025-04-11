@@ -2,9 +2,9 @@
     "identifier": "com.pa.mod.map_generator",
     "author":"tatapstar, TT",
 
-    "icon": "https://raw.githubusercontent.com/Planetary-Annihilation-Fandom/Map-Generator/master/icon.png",
+    "icon": "https://raw.githubusercontent.com/Planetary-Annihilation-Fandom/com.pa.mod.map_generator/refs/heads/main/icon.png",
     "display_name": "Godblessed Map Generator",
-    "description": "Map Generator for modern lobbies!",
+    "description": "Generate maps in lobby blessed by the gods!",
     
     "category":[
         "ui",
@@ -13,7 +13,7 @@
     ],
 
     "forum": "https://steamcommunity.com/app/386070/discussions/0/5400412499755321533/",
-    "github": "https://github.com/Planetary-Annihilation-Fandom/Map-Generator",
+    "github": "https://github.com/Planetary-Annihilation-Fandom/com.pa.mod.map_generator",
 
     "build": "120799",
     "version": "3.0.0-up0",

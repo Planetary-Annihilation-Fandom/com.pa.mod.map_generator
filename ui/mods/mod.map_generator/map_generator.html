@@ -28,7 +28,6 @@
                                 click_sound: 'default', rollover_sound: 'default'" data-placement="right">
                                     <img class=" quad" src="coui://ui/mods/mod.map_generator/icons/planet.png">
                                 </button>
-                                <hr id="option-control-highlight" class="option" />
                             </div>
                             <div id="option-control" class="vertical gap-small">
                                 <button id="option-control-button" class="option xl btn-default"
@@ -36,7 +35,6 @@
                                 click_sound: 'default', rollover_sound: 'default'" data-placement="right">
                                     <img class="quad xl" src="coui://ui/mods/mod.map_generator/icons/planet.png">
                                 </button>
-                                <hr id="option-control-highlight" class="option xl" />
                             </div>
                             <div id="option-control" class="vertical gap-small">
                                 <button id="option-control-button" class="option xxl btn-default"
@@ -44,7 +42,6 @@
                                 click_sound: 'default', rollover_sound: 'default'" data-placement="right">
                                     <img class=" quad xxl" src="coui://ui/mods/mod.map_generator/icons/planet.png">
                                 </button>
-                                <hr id="option-control-highlight" class="option xxl" />
                             </div>
                         </div>
                     </div>
@@ -60,7 +57,6 @@
                                 click_sound: 'default', rollover_sound: 'default'" data-placement="right">
                                     <img class="quad" src="coui://ui/mods/mod.map_generator/icons/metal_small.png">
                                 </button>
-                                <hr id="option-control-highlight" class="option" />
                             </div>
                             <div id="option-control" class="vertical gap-small">
                                 <button id="option-control-button" class="option xl btn-default"
@@ -68,7 +64,6 @@
                                 click_sound: 'default', rollover_sound: 'default'" data-placement="right">
                                     <img class="quad xl" src="coui://ui/mods/mod.map_generator/icons/metal_medium.png">
                                 </button>
-                                <hr id="option-control-highlight" class="option xl" />
                             </div>
                             <div id="option-control" class="vertical gap-small">
                                 <button id="option-control-button" class="option xxl btn-default"
@@ -76,7 +71,6 @@
                                 click_sound: 'default', rollover_sound: 'default'" data-placement="right">
                                     <img class="quad xxl" src="coui://ui/mods/mod.map_generator/icons/metal_big.png">
                                 </button>
-                                <hr id="option-control-highlight" class="option xxl" />
                             </div>
                         </div>
                     </div>
@@ -149,17 +143,21 @@
                 </div>
             </div>
 
-            <div class="options-container horizontal">
-
+            <div class="options-container vertical">
+                <button id="option-control-button" class="option btn-default"
+                    data-bind="tooltip: '!LOC:Use moons', 
+                    click_sound: 'default', rollover_sound: 'default',
+                    click: toogle_moons" data-placement="right">
+                    <img class="quad" src="coui://ui/mods/mod.map_generator/icons/option_moons.png">
+                </button>
+                <hr class="horizontal-split" />
             </div>
 
-            <button id="generate-planet-button" class="generate btn-default" 
-            data-bind="
+            <button id="generate-planet-button" class="generate btn-default" data-bind="
                 tooltip: '!LOC:Click to generate planet', 
                 click_sound: 'default', 
                 rollover_sound: 'default',
-                click: test_view_model"
-            data-placement="bottom">
+                click: test_view_model" data-placement="bottom">
                 <label class="generate-planet-label">Generate Planet</label>
             </button>
         </div>

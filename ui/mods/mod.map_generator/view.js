@@ -6,6 +6,10 @@ define(function (require) {
         self.test_view_model = function () {
             console.log('test_view_model');
         }
+
+        self.toogle_moons = function () {
+            console.log('toogle_moons');
+        }
     };
 
     return {

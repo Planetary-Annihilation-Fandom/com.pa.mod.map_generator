@@ -18,6 +18,7 @@ const require_other_files = require.config({
 // modules
 var _math;
 var _data;
+var _planetnames;
 
 const style_option_selected = 'selected';
 const planet_size_description_map = [
@@ -117,9 +118,10 @@ $(function () {
 
 function awake() {
     // loading modules first to ensure they are loaded
-    require_other_files(['./math', './data'], function (math, data) {
+    require_other_files(['./math', './data', './scripts/planetnames'], function (math, data, planetnames) {
         _math = math;
         _data = data;
+        _planetnames = planetnames;
 
         // APPEND HTML
         $.get("coui://ui/mods/mod.map_generator/map_generator.html", function (html) {
@@ -300,7 +302,7 @@ const biomes_id_list = [
     "tropical_lite", // Tropical
     "moon_lite", // Moon
     "asteroid", // Asteroid
-    "sandbox", // Sandbox
+    // "sandbox", // Sandbox
     "metal"
 ];
 
@@ -361,7 +363,7 @@ function generate() {
     console.log(biome);
     console.log(biome_id);
 
-    getRandomSystem('Generated', get_generation_size(), biome_id, get_metal_density(),
+    get_random_system('Generated', get_generation_size(), biome_id, get_metal_density(),
         get_additional_surface_parameters(temperature, undefined, undefined)).then(function (system) {
             model.system(system);
             model.updateSystem(model.system());
@@ -538,7 +540,7 @@ function get_additional_surface_parameters(temperature_0_100, waterDepth_0_70, h
     return { temperature: temperature_0_100, waterDepth: waterDepth_0_70, height: height_20_60 }
 }
 
-function getRandomSystem(planet_title, planet_size, biomeName, base_metal_density,
+function get_random_system(planet_title, planet_size, biomeName, base_metal_density,
     additional_surface_parameters) {
 
     const slots = model.slots() || 2;
@@ -566,6 +568,7 @@ function getRandomSystem(planet_title, planet_size, biomeName, base_metal_densit
 
     console.log("making planet settings")
     var planet = {
+        name: _planetnames.generate_planet_name(),
         mass: mass,
         intended_radius: planet_size,
         position_x: 50000,
@@ -600,7 +603,7 @@ function getRandomSystem(planet_title, planet_size, biomeName, base_metal_densit
 
     const minplayers = slots, maxplayers = slots;
     var rSystem = {
-        name: planet_title + ' R' + planet_size + ' MC' + metal_calculation.metalClusters + ' MD' + metal_calculation.metalDensity + ' W' + waterDepth,
+        name: _planetnames.generate_system_name(),
         isRandomlyGenerated: true,
         players: [minplayers, maxplayers]
     };

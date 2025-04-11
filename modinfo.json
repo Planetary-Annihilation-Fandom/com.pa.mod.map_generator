@@ -1,9 +1,9 @@
 {
     "identifier": "com.pa.mod.map_generator",
-    "author":"Kirill Gasanov",
+    "author":"tatapstar, TT",
 
     "icon": "https://raw.githubusercontent.com/Planetary-Annihilation-Fandom/Map-Generator/master/icon.png",
-    "display_name": "map.generator.dev",
+    "display_name": "Godblessed Map Generator",
     "description": "Map Generator for modern lobbies!",
     
     "category":[
@@ -16,8 +16,8 @@
     "github": "https://github.com/Planetary-Annihilation-Fandom/Map-Generator",
 
     "build": "120799",
-    "version": "2.0.0-up0",
-    "date": "2024-05-11",
+    "version": "3.0.0-up0",
+    "date": "2025-04-11",
     
     "context":"client",
     "priority": 100,

@@ -91,33 +91,6 @@ const biome_map = [
     }
 ]
 
-const option_groups_map = [
-    {
-        id: 'option-group-planet_size'
-    },
-    {
-        id: 'option-group-metal'
-    },
-    {
-        id: 'option-group-biome'
-    }
-]
-
-const default_generation_options = [
-    {
-        group_id: 'option-group-planet_size',
-        option_value: 2
-    },
-    {
-        group_id: 'option-group-metal',
-        option_value: 2
-    },
-    {
-        group_id: 'option-group-biome',
-        option_value: 8
-    }
-]
-
 $(function () {
     awake();
     return
@@ -125,86 +98,22 @@ $(function () {
 
 function awake() {
     // loading modules first to ensure they are loaded
-    require_mod_modules(['./view','./math', './data', './scripts/planetnames'], function (view,math, data, planetnames) {
+    require_mod_modules(['./view', './math', './data', './scripts/planetnames'], function (view, math, data, planetnames) {
         _view = view;
         _math = math;
         _data = data;
         _planetnames = planetnames;
 
         $('#system').append(_view.html);
-
-        // APPEND HTML
-        // $.get("coui://ui/mods/mod.map_generator/map_generator.html", function (html) {
-        //     $('#system').append(html);
-        // })
     })
 }
 
 // called from initialized html
 function start() {
-    var modification_data = _data.load();
-    if (modification_data == null) {
-        modification_data = _data.create_empty();
-        _data.save(modification_data);
-    }
-
-    select_user_or_default_options(_.cloneDeep(modification_data));
-
-    console.log(modification_data)
+    _view.view_model.preselect_options();
 }
 
-function select_user_or_default_options(modification_data) {
-    $().ready(function () {
-        for (var i = 0; i < option_groups_map.length; i++) {
-            var option_group_id = option_groups_map[i].id;
-            var what_to_select_data = undefined;
-
-            if (modification_data != null) {
-                what_to_select_data = _.find(modification_data.options, { group_id: option_group_id });
-            }
-
-            var default_option_value_for_group =
-                _.find(default_generation_options, { group_id: option_group_id });
-
-            if (default_option_value_for_group === undefined) {
-                default_option_value_for_group = {
-                    group_id: option_group_id,
-                    option_value: 1
-                }
-            }
-
-            if (what_to_select_data === undefined) {
-                what_to_select_data = {
-                    group_id: option_group_id,
-                    option_value: default_option_value_for_group.option_value
-                }
-                modification_data.options.push(what_to_select_data)
-            }
-
-            // console.log(option_group_id)
-            var option_group = $('#' + option_group_id);
-            // console.log(option_group[0])
-            // console.log($(option_group).find("#option-group-header")[0])
-            var option_set = $(option_group).find("#option-set");
-            // console.log(option_set[0])
-            // console.log(what_to_select_data)
-            option_set.children("#option-control").each(function (index, option_control) {
-                // im using "option_value - 1" cause buttons values and index correspond to each other
-                if (index === what_to_select_data.option_value - 1) {
-                    var option_button_element = $(option_control).find("#option-control-button")[0];
-                    console.log("selecting " + option_group_id + " " + what_to_select_data.option_value);
-                    selectOption(option_group_id, option_button_element, what_to_select_data.option_value);
-                }
-                // console.log(index)
-                // console.log(jquery_element);
-            })
-        }
-
-        _data.save(modification_data)
-    })
-}
-
-function selectOption(option_group_id, option_button, option_value) {
+function selectOption(option_group_id, option_button, value) {
     $().ready(function () {
         var option_group = $('#' + option_group_id);
         //console.log(group_element);
@@ -229,7 +138,7 @@ function selectOption(option_group_id, option_button, option_value) {
                 $(button).children('img').addClass(style_option_selected);
                 $(highlight).addClass(style_option_selected);
 
-                update_modification_data_options(option_group_id, option_value);
+                update_modification_data_options(option_group_id, value);
             } else {
                 // console.log("not found");
                 $(button).removeClass(style_option_selected).blur();
@@ -238,7 +147,7 @@ function selectOption(option_group_id, option_button, option_value) {
             }
         })
 
-        var option_data = handle_option(option_group_id, option_value);
+        var option_data = handle_option(option_group_id, value);
         var option_group_description = $(option_group).find("#option-group-description");
         // console.log(option_data);
         if (option_data !== undefined) {
@@ -251,47 +160,47 @@ function selectOption(option_group_id, option_button, option_value) {
  * Updates the option value for a specified option group in the modification data.
  * 
  * @param {string} options_group_id - The ID of the option group to update.
- * @param {number} option_value - The new value to set for the option group.
+ * @param {number} value - The new value to set for the option group.
  */
 
-function update_modification_data_options(options_group_id, option_value) {
+function update_modification_data_options(options_group_id, value) {
     var modification_data = _data.load();
-    var option_group_data = _.find(modification_data.options, { group_id: options_group_id });
-    option_group_data.option_value = option_value;
+    var option_group_data = _.find(modification_data.options, { id: options_group_id });
+    option_group_data.value = value;
     _data.save(modification_data)
 }
 
-function handle_option(option_group_id, option_value) {
-    if (option_group_id == "option-group-planet_size") {
-        return handle_planet_size_option(option_value);
+function handle_option(option_group_id, value) {
+    if (option_group_id == "planet-size") {
+        return handle_planet_size_option(value);
     }
-    if (option_group_id == "option-group-metal") {
-        return handle_metal_count_option(option_value);
+    if (option_group_id == "metal") {
+        return handle_metal_count_option(value);
     }
-    if (option_group_id == "option-group-biome") {
-        return handle_biome_option(option_value);
+    if (option_group_id == "biome") {
+        return handle_biome_option(value);
     }
 
     return undefined
 }
 
-function handle_planet_size_option(option_value) {
-    var option_description = _.find(planet_size_description_map, { value: option_value }).name;
+function handle_planet_size_option(value) {
+    var option_description = _.find(planet_size_description_map, { value: value }).name;
 
     return {
         name: option_description
     }
 }
-function handle_metal_count_option(option_value) {
-    var option_description = _.find(metal_count_description_map, { value: option_value }).name;
+function handle_metal_count_option(value) {
+    var option_description = _.find(metal_count_description_map, { value: value }).name;
 
     return {
         name: option_description
     }
 }
-function handle_biome_option(option_value) {
-    var option_description = _.find(biome_map, { value: option_value }).name;
-    // console.log(option_value+" "+option_description)
+function handle_biome_option(value) {
+    var option_description = _.find(biome_map, { value: value }).name;
+    // console.log(value+" "+option_description)
     return {
         name: option_description
     }
@@ -609,6 +518,7 @@ function get_random_system(planet_title, planet_size, biomeName, base_metal_dens
         }
     }
 
+    create_landing_zones(planet);
     console.log(planet);
 
     const minplayers = slots, maxplayers = slots;
@@ -772,6 +682,53 @@ function get_random_system(planet_title, planet_size, biomeName, base_metal_dens
 
         return planets; // Возвращаем обновленный массив планет (опционально)
     }
+
+    function create_landing_zones(planet) {
+        const radius = planet.planet.radius;
+        planet.landing_zones = {
+            list: [
+                // x,y,z
+                [
+                    radius,
+                    0,
+                    0
+                ],
+                [
+                    -radius,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    radius,
+                    0
+                ],
+                [
+                    0,
+                    -radius,
+                    0
+                ]
+            ],
+            rules: [
+                {
+                    min: 1,
+                    max: 10
+                },
+                {
+                    min: 1,
+                    max: 10
+                },
+                {
+                    min: 1,
+                    max: 10
+                },
+                {
+                    min: 1,
+                    max: 10
+                }
+            ]
+        }
+    }
 }
 
 // DATA MANAGEMENT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -781,8 +738,8 @@ function get_random_system(planet_title, planet_size, biomeName, base_metal_dens
 //modification_data:
 // [ structure
 // {
-//     group_id: 'option-group-planet_size',
-//     option_value: 2
+//     id: 'planet-size',
+//     value: 2
 // },
 // ...
 //]
@@ -792,24 +749,25 @@ function get_random_system(planet_title, planet_size, biomeName, base_metal_dens
  * @returns {number} The planet size option value.
  */
 function get_generation_size_option() {
-    const size = _.find(_data.get_options(), { group_id: 'option-group-planet_size' });
+    const size = _.find(_data.get_options(), { id: 'planet-size' });
     if (size == undefined)
-        return _.find(default_generation_options, { group_id: 'option-group-planet_size' }).option_value;
+        return _.find(default_generation_options, { id: 'planet-size' }).value;
     else
-        return size.option_value;
+        return size.value;
 }
 
+// FIX
 
 /**
  * Gets the current metal option value from the stored modification data. If the stored modification data doesn't have this option, returns the default option value.
  * @returns {number} The metal option value.
  */
 function get_generation_metal_option() {
-    const metal = _.find(_data.get_options(), { group_id: 'option-group-metal' });
+    const metal = _.find(_data.get_options(), { id: 'metal' });
     if (metal == undefined)
-        return _.find(default_generation_options, { group_id: 'option-group-metal' }).option_value;
+        return _.find(default_generation_options, { id: 'metal' }).value;
     else
-        return metal.option_value;
+        return metal.value;
 }
 
 /**
@@ -817,11 +775,11 @@ function get_generation_metal_option() {
  * @returns {number} The biome option value.
  */
 function get_generation_biome_option() {
-    const biome = _.find(_data.get_options(), { group_id: 'option-group-biome' });
+    const biome = _.find(_data.get_options(), { id: 'biome' });
     if (biome == undefined)
-        return _.find(default_generation_options, { group_id: 'option-group-biome' }).option_value;
+        return _.find(default_generation_options, { id: 'biome' }).value;
     else
-        return biome.option_value;
+        return biome.value;
 }
 
 function get_generation_biome() {

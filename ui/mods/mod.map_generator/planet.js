@@ -1,5 +1,6 @@
 define(function () {
     // Planet model defines planet parameters for system
+    // FOR NOW IT IS ONLY A REFERENCE
     var PlanetModel = function () {
         this.name = 'Planet';
         // Im using 50k cause that is what uses to be common for planets (tatapstar)
@@ -66,10 +67,26 @@ define(function () {
             symmetryType: "none",
 
             heightAdjustments: []
-        }
+        };
         // TODO: add custom landing zones
+        this.landing_zones = {
+            list: [
+                // x,y,z
+                [
+                    600,
+                    600,
+                    600
+                ]
+            ],
+            rules: [
+                {
+                    min: 1,
+                    max: 10
+                }
+            ]
+        };
     }
-    
+
     return {
 
     };

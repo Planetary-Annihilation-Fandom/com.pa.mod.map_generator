@@ -7,7 +7,7 @@ define(function () {
 // const radius = 1;
 // const nTeams = 4;
 // const playersPerTeam = 3;
-const teamDist = Math.PI / 3;
+const teamDist = Math.PI / 2;
 const playerDist = Math.PI / 10;
 const rotationOffset = 0;
 const triangleSharpness = 1.0;

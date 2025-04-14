@@ -66,9 +66,19 @@ define(function () {
             symmetricalStarts: true,
             symmetryType: "none",
 
-            heightAdjustments: []
+            heightAdjustments: [
+                {
+                    pos:['x', 'y', 'z'],
+                    radius: 200,
+                    // Can be any sign, but negative numbers will be used as positive
+                    adjustment: 100,
+                    // Controls direction of height adjustment (-1.0 for down, 1.0 for up) 
+                    // (values between -1.0 and 1.0 are allowed and used as intermediate values) (0.0 is for no change)
+                    // (can be greater than 1.0 or less than -1.0 and will be used as a multiplier)
+                    normalizedAdjustment: -1
+                }
+            ]
         };
-        // TODO: add custom landing zones
         this.landing_zones = {
             list: [
                 // x,y,z

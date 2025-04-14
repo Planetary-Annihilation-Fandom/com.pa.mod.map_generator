@@ -21,8 +21,8 @@ define(['require', './data', 'text!./map_generator.html'], function (require) {
          * @param {object} value - The new value to set for the option group.
          */
         self.select_option = function (options_id, value, event,data) {
-            console.log("MAP_GENERATOR/VIEW: :select_option: options_id: " + options_id + " value: " + value);
-            console.log(data);
+            // console.log("MAP_GENERATOR/VIEW: :select_option: options_id: " + options_id + " value: " + value);
+            // console.log(data);
 
             // UPDATE UI
             $().ready(function () {
@@ -59,32 +59,32 @@ define(['require', './data', 'text!./map_generator.html'], function (require) {
          */
         self.preselect_options = function () {
             $().ready(function () {
-                console.log("MAP_GENERATOR/VIEW: preselecting options");
+                // console.log("MAP_GENERATOR/VIEW: preselecting options");
                 const options_id_map = ["planet-size", "metal", "biome",]
                 for (var i = 0; i < options_id_map.length; i++) {
-                    console.log("MAP_GENERATOR/VIEW: preselecting " + options_id_map[i]);
+                    // console.log("MAP_GENERATOR/VIEW: preselecting " + options_id_map[i]);
 
                     var id = options_id_map[i];
                     var options_element = $('#' + id);
                     var controls_element = $(options_element).find("#controls");
 
                     controls_element.children("#control").each(function (index, jquery_element) {
-                        console.log("MAP_GENERATOR/VIEW: option control is")
-                        console.log(jquery_element)
+                        // console.log("MAP_GENERATOR/VIEW: option control is")
+                        // console.log(jquery_element)
                         const value_for_id = _data.get_option(id);
                         if (value_for_id == undefined) {
-                            console.log("MAP_GENERATOR/VIEW: No option found for id: " + id);
+                            // console.log("MAP_GENERATOR/VIEW: No option found for id: " + id);
                             return;
                         }
 
-                        console.log("MAP_GENERATOR/VIEW: value for id: " + value_for_id);
+                        // console.log("MAP_GENERATOR/VIEW: value for id: " + value_for_id);
                         const button_element = $(jquery_element).find("button");
-                        console.log("MAP_GENERATOR/VIEW: button element is")
-                        console.log(button_element)
-                        console.log("MAP_GENERATOR/VIEW: button id is " + button_element.attr('id'));
+                        // console.log("MAP_GENERATOR/VIEW: button element is")
+                        // console.log(button_element)
+                        // console.log("MAP_GENERATOR/VIEW: button id is " + button_element.attr('id'));
                         // if button id is the same as option value, select it
                         if (button_element.attr('id') === value_for_id) {
-                            console.log("selecting " + id + " " + value_for_id);
+                            // console.log("selecting " + id + " " + value_for_id);
                             self.select_option(id, value_for_id, null,{ currentTarget: button_element[0]});
                         }
                     })

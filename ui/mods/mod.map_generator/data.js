@@ -164,7 +164,7 @@ define(function () {
                 }
                 
             } else {
-                console.log("MAP_GENERATOR/DATA: option found for id (value): " + option_id + " (" + option.value + ")");
+                // console.log("MAP_GENERATOR/DATA: option found for id (value): " + option_id + " (" + option.value + ")");
                 return option.value;
             }
         },

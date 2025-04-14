@@ -26,71 +26,9 @@ var _view;
 var _math;
 var _data;
 var _planetnames;
+var _surface;
 
-const style_option_selected = 'selected';
-const planet_size_description_map = [
-    {
-        value: 1,
-        name: 'small'
-    },
-    {
-        value: 2,
-        name: 'medium'
-    },
-    {
-        value: 3,
-        name: 'large'
-    }
-]
-const metal_count_description_map = [
-    {
-        value: 1,
-        name: 'poor'
-    },
-    {
-        value: 2,
-        name: 'normal'
-    },
-    {
-        value: 3,
-        name: 'rich'
-    }
-]
-const biome_map = [
-    {
-        value: 1,
-        name: 'moon'
-    },
-    {
-        value: 2,
-        name: 'asteroid'
-    },
-    {
-        value: 3,
-        name: 'desert'
-    },
-    {
-        value: 4,
-        name: 'forest'
-    },
-    {
-        value: 5,
-        name: 'lava'
-    },
-    {
-        value: 6,
-        name: 'metallic'
-    },
-    {
-        value: 7,
-        name: 'snow'
-    },
-    {
-        value: 8,
-        name: 'random'
-    }
-]
-
+// Wait for the game (mostly the UI) to be loaded
 $(function () {
     awake();
     return
@@ -98,117 +36,29 @@ $(function () {
 
 function awake() {
     // loading modules first to ensure they are loaded
-    require_mod_modules(['./view', './math', './data', './scripts/planetnames'], function (view, math, data, planetnames) {
-        _view = view;
-        _math = math;
-        _data = data;
-        _planetnames = planetnames;
+    require_mod_modules(
+        ['./view', './math', './data', './scripts/planetnames', './surface'],
+        function (view, math, data, planetnames, surface) {
+            _view = view;
+            _math = math;
+            _data = data;
+            _planetnames = planetnames;
+            _surface = surface;
 
-        $('#system').append(_view.html);
-    })
+            $('#system').append(_view.html);
+        })
 }
 
 // called from initialized html
 function start() {
     _view.view_model.preselect_options();
+
+    console.log("CHECKING SLOTS -------------------------------------");
+    console.log(model.slots());
+    console.log(model.playerSlots());
+    console.log(model.armies().slots); // undefined .slots and .slots() is not a function
+
 }
-
-function selectOption(option_group_id, option_button, value) {
-    $().ready(function () {
-        var option_group = $('#' + option_group_id);
-        //console.log(group_element);
-
-        var option_set = option_group.find("#option-set");
-
-        // console.log(option_button);
-        // console.log("option set");
-        // console.log(option_set[0]);
-        option_set.children("#option-control").each(function (index, jquery_element) {
-            // console.log(element);
-            // element is $(this)
-            var button = $(jquery_element).find("#option-control-button");
-            var highlight = $(jquery_element).find("#option-control-highlight");
-
-            // add highlight or remove
-            // im using button[0] because button is a jquery object and the first element is the vanilla button
-            // console.log(button[0]);
-            if (button[0] === option_button) {
-                // console.log("found");
-                $(button).addClass(style_option_selected).blur();
-                $(button).children('img').addClass(style_option_selected);
-                $(highlight).addClass(style_option_selected);
-
-                update_modification_data_options(option_group_id, value);
-            } else {
-                // console.log("not found");
-                $(button).removeClass(style_option_selected).blur();
-                $(button).children('img').removeClass(style_option_selected);
-                $(highlight).removeClass(style_option_selected);
-            }
-        })
-
-        var option_data = handle_option(option_group_id, value);
-        var option_group_description = $(option_group).find("#option-group-description");
-        // console.log(option_data);
-        if (option_data !== undefined) {
-            option_group_description.html(option_data.name);
-        }
-    })
-}
-
-/**
- * Updates the option value for a specified option group in the modification data.
- * 
- * @param {string} options_group_id - The ID of the option group to update.
- * @param {number} value - The new value to set for the option group.
- */
-
-function update_modification_data_options(options_group_id, value) {
-    var modification_data = _data.load();
-    var option_group_data = _.find(modification_data.options, { id: options_group_id });
-    option_group_data.value = value;
-    _data.save(modification_data)
-}
-
-function handle_option(option_group_id, value) {
-    if (option_group_id == "planet-size") {
-        return handle_planet_size_option(value);
-    }
-    if (option_group_id == "metal") {
-        return handle_metal_count_option(value);
-    }
-    if (option_group_id == "biome") {
-        return handle_biome_option(value);
-    }
-
-    return undefined
-}
-
-function handle_planet_size_option(value) {
-    var option_description = _.find(planet_size_description_map, { value: value }).name;
-
-    return {
-        name: option_description
-    }
-}
-function handle_metal_count_option(value) {
-    var option_description = _.find(metal_count_description_map, { value: value }).name;
-
-    return {
-        name: option_description
-    }
-}
-function handle_biome_option(value) {
-    var option_description = _.find(biome_map, { value: value }).name;
-    // console.log(value+" "+option_description)
-    return {
-        name: option_description
-    }
-}
-
-// PLANET GENERATION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// PLANET GENERATION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// PLANET GENERATION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 /**
  * List of all default biomes.
@@ -225,16 +75,14 @@ const biomes_id_list = [
     "metal"
 ];
 
-
-
 function generate() {
 
     // TODO: use biome generation option
-    const biome = get_generation_biome();
+    const biome = _data.get_option('biome');
     var biome_id;
     var temperature;
 
-    switch (biome.name) {
+    switch (biome) {
         case 'moon':
             // Handle moon biome
             biome_id = 'moon_lite';
@@ -289,6 +137,23 @@ function generate() {
             model.changeSettings();
             model.requestUpdateCheatConfig();
         })
+
+    /**
+     * Returns a random biome ID from the provided list of biomes or from the default list if none is provided.
+     * 
+     * @param {Array<string>|undefined} biomes - Optional. An array of biome IDs to choose from. If undefined,
+     *                                           the default list of all possible biomes is used.
+     * @returns {string} - A randomly selected biome ID from the given or default list.
+     */
+    function get_random_biome_id(biomes) {
+        if (biomes == undefined) {
+            biomes = biomes_id_list;
+            return biomes[_math.random_index(biomes.length)];
+        } else if (biomes.constructor == Array) {
+            return biomes[_math.random_index(biomes.length)];
+        }
+        return biomes;
+    }
 }
 
 
@@ -301,58 +166,19 @@ function get_generation_size(value) {
         }
     }
 
-    const size_option = get_generation_size_option();
-    if (size_option == undefined) {
-        return 404
-    } else {
-        if (size_option == 1) {
-            return _math.random_integer(400, 500)
-        } else if (size_option == 2) {
-            return _math.random_integer(500, 650)
-        }
-        else if (size_option == 3) {
-            return _math.random_integer(650, 900)
-        }
+    const size = _data.get_option('planet-size');
+    switch (size) {
+        case "small":
+            return _math.random_integer(400, 500);
+        case "medium":
+            return _math.random_integer(500, 650);
+        case "large":
+            return _math.random_integer(650, 900);
+        case undefined:
+            return 404;
+        default:
+            return 404
     }
-}
-
-
-function get_biome_id(biomes) {
-    if (biomes == undefined) {
-        return get_random_biome_id()
-    } else if (typeof biomes === 'string') {
-        return biomes;
-    } else if (biomes.constructor == Array) {
-        return get_random_biome_id(biomes);
-    }
-
-    const biome_option = get_biome_option();
-    if (biome_option == undefined) {
-        return biomes[0];
-    } else {
-        return biomes[biome_option - 1];
-    }
-
-
-}
-
-function get_random_biome_id(biomes) {
-    if (biomes == undefined) {
-        biomes = get_all_possible_biomes_list();
-        return biomes[_math.random_index(biomes.length)];
-    } else if (biomes.constructor == Array) {
-        return biomes[_math.random_index(biomes.length)];
-    }
-    return biomes;
-}
-
-/**
- * Returns the default list of all possible biomes.
- * @returns {Array<string>} - List of all possible biome ids.
- */
-function get_all_possible_biomes_list() {
-    const biomes = biomes_id_list
-    return biomes
 }
 
 /**
@@ -361,28 +187,30 @@ function get_all_possible_biomes_list() {
  * If a single value is provided, it returns that value.
  * If no value is provided, it retrieves the metal option setting and returns a corresponding random density value.
  * 
- * @param {Array<number>|number|undefined} value - Optional. An array specifying a range or a single number for metal density.
+ * @param {Array<number>|number|undefined} custom_value - Optional. An array specifying a range or a single number for metal density.
  * @returns {number} - The determined metal density.
  */
-function get_metal_density(value) {
-    if (value != undefined) {
-        if (value.constructor == Array) {
-            return _math.random_integer(value[0], value[1]);
+function get_metal_density(custom_value) {
+    if (custom_value != undefined) {
+        if (custom_value.constructor == Array) {
+            return _math.random_integer(custom_value[0], custom_value[1]);
         } else {
-            return value
+            return custom_value
         }
     }
-    const metal_option = get_generation_metal_option();
-    if (metal_option == undefined) {
-        return 0
-    } else {
-        if (metal_option == 1) {
-            return _math.random_integer(15, 20)
-        } else if (metal_option == 2) {
-            return _math.random_integer(20, 30)
-        } else if (metal_option == 3) {
-            return _math.random_integer(30, 40)
-        }
+
+    const metal = _data.get_option('metal');
+    switch (metal) {
+        case 'poor':
+            return _math.random_integer(15, 20);
+        case 'normal':
+            return _math.random_integer(20, 30);
+        case 'rich':
+            return _math.random_integer(30, 40);
+        case undefined:
+            return 0;
+        default:
+            return 0;
     }
 }
 
@@ -506,7 +334,8 @@ function get_random_system(planet_title, planet_size, biomeName, base_metal_dens
             waterDepth: 50,
             temperature: temperature,
             // i dont know what biomeScale does
-            biomeScale: _math.random_integer(50, 100),
+            // biomeScale: _math.random_integer(50, 100),
+            biomeScale: _math.random_integer(0, 0),
             metalDensity: metal_calculation.metalDensity,
             metalClusters: metal_calculation.metalClusters,
             landingZoneSize: landingZoneSize,
@@ -518,7 +347,11 @@ function get_random_system(planet_title, planet_size, biomeName, base_metal_dens
         }
     }
 
+    // get_teams();
     create_landing_zones(planet);
+    create_height_adjustments(planet);
+
+    console.log("MAP GENERATOR/MAIN: get_random_system: ");
     console.log(planet);
 
     const minplayers = slots, maxplayers = slots;
@@ -684,49 +517,105 @@ function get_random_system(planet_title, planet_size, biomeName, base_metal_dens
     }
 
     function create_landing_zones(planet) {
-        const radius = planet.planet.radius;
+        // const radius = planet.planet.radius;
+        // planet.landing_zones = {
+        //     list: [
+        //         // x,y,z
+        //         [
+        //             radius,
+        //             0,
+        //             0
+        //         ],
+        //         [
+        //             -radius,
+        //             0,
+        //             0
+        //         ],
+        //         [
+        //             0,
+        //             radius,
+        //             0
+        //         ],
+        //         [
+        //             0,
+        //             -radius,
+        //             0
+        //         ]
+        //     ],
+        //     rules: [
+        //         {
+        //             min: 1,
+        //             max: 10
+        //         },
+        //         {
+        //             min: 1,
+        //             max: 10
+        //         },
+        //         {
+        //             min: 1,
+        //             max: 10
+        //         },
+        //         {
+        //             min: 1,
+        //             max: 10
+        //         }
+        //     ]
+        // }
+
+        var teams = get_teams();
+
+        var landing_zones = _surface.generate_landing_zones(planet, teams.length, 10);
         planet.landing_zones = {
-            list: [
-                // x,y,z
-                [
-                    radius,
-                    0,
-                    0
-                ],
-                [
-                    -radius,
-                    0,
-                    0
-                ],
-                [
-                    0,
-                    radius,
-                    0
-                ],
-                [
-                    0,
-                    -radius,
-                    0
-                ]
-            ],
-            rules: [
-                {
-                    min: 1,
-                    max: 10
-                },
-                {
-                    min: 1,
-                    max: 10
-                },
-                {
-                    min: 1,
-                    max: 10
-                },
-                {
-                    min: 1,
-                    max: 10
-                }
-            ]
+            list: landing_zones
+        };
+    }
+
+    function get_teams(){
+        var armies = model.armies();
+        var teams = [];
+        for (var i = 0; i < armies.length; i++) {
+            var army = armies[i];
+            var slots = army.slots();
+            
+            var players = _.map(slots, function (slot) {
+                return slot.playerName();
+            })
+
+            var team = {
+                id: i,
+                players: players
+            }
+            console.log(team);
+
+            teams.push(team);
+        }
+
+        return teams;
+    }
+
+    function create_height_adjustments(planet) {
+        const landing_zones_positions = planet.landing_zones.list;
+
+        // Create height adjustments for the landing zones
+        planet.planet.heightAdjustments = _.map(landing_zones_positions, function (pos) {
+            return create_adjustment(pos, 90, 100);
+        });
+
+
+        /**
+         * Creates a height adjustment object.
+         * @param {number[]} pos - The position vector [x, y, z] of the adjustment.
+         * @param {number} radius - The radius of the adjustment.
+         * @param {number} adjustment - The value of the adjustment. Can be positive or negative.
+         * @returns {{pos: number[], radius: number, adjustment: number}} The created height adjustment object.
+         */
+        function create_adjustment(pos, radius, adjustment) {
+            return {
+                pos: pos,
+                radius: radius,
+                adjustment: adjustment,
+                normalizedAdjustment: 1.5
+            }
         }
     }
 }
@@ -757,38 +646,4 @@ function get_generation_size_option() {
 }
 
 // FIX
-
-/**
- * Gets the current metal option value from the stored modification data. If the stored modification data doesn't have this option, returns the default option value.
- * @returns {number} The metal option value.
- */
-function get_generation_metal_option() {
-    const metal = _.find(_data.get_options(), { id: 'metal' });
-    if (metal == undefined)
-        return _.find(default_generation_options, { id: 'metal' }).value;
-    else
-        return metal.value;
-}
-
-/**
- * Gets the current biome option value from the stored modification data. If the stored modification data doesn't have this option, returns the default option value.
- * @returns {number} The biome option value.
- */
-function get_generation_biome_option() {
-    const biome = _.find(_data.get_options(), { id: 'biome' });
-    if (biome == undefined)
-        return _.find(default_generation_options, { id: 'biome' }).value;
-    else
-        return biome.value;
-}
-
-function get_generation_biome() {
-    const selected_option_number = get_generation_biome_option();
-    const selected_option_name = _.find(biome_map, { value: selected_option_number }).name;
-
-    return {
-        name: selected_option_name,
-        value: selected_option_number
-    }
-}
 

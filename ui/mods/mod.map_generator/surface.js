@@ -1,31 +1,38 @@
-// Main function that kicks off the simulation
-// Generates spawn points for teams and players on a sphere
-function main() {
-    var radius = 1;
-    var nTeams = 4;
-    var playersPerTeam = 3;
-    var teamDist = Math.PI / 3;
-    var playerDist = Math.PI / 10;
-    var rotationOffset = 0;
-    var triangleSharpness = 1.0;
-    var spiralCurve = 3.0;
-    var spacing = 0.05;
-    var formationName = 'circle';
-    var teamDistributionShape = 'circle';
+define(function () {
+    return {
+        generate_landing_zones: generate_landing_zones
+    };
+});
+
+// const radius = 1;
+// const nTeams = 4;
+// const playersPerTeam = 3;
+const teamDist = Math.PI / 3;
+const playerDist = Math.PI / 10;
+const rotationOffset = 0;
+const triangleSharpness = 1.0;
+const spiralCurve = 3.0;
+const spacing = 0.05;
+const formationName = 'circle';
+// const teamDistributionShape = 'circle'; // i dont see any use in code
+
+function generate_landing_zones(planet, teams_count, players_per_team) {
+    var radius = planet.planet.radius;
 
     var centerVec = randomPointOnSphere(radius);
-    var teamCenters = generateFairTeamSpawns(centerVec, teamDist, nTeams, teamDistributionShape);
+    var teamCenters = generateFairTeamSpawns(centerVec, teamDist, teams_count);
 
-    var allPlayers = [];
+    var landing_zones = [];
     for (var i = 0; i < teamCenters.length; i++) {
         var teamPos = teamCenters[i];
-        var players = generatePlayerSpawns(teamPos, centerVec, playerDist, playersPerTeam, rotationOffset, formationName, triangleSharpness, spiralCurve, spacing);
-        allPlayers = allPlayers.concat(players);
+        var team_landing_zones = generatePlayerSpawns(teamPos, centerVec, playerDist, players_per_team, rotationOffset, formationName, triangleSharpness, spiralCurve, spacing);
+        landing_zones = landing_zones.concat(team_landing_zones);
     }
 
     console.log('Center Point:', centerVec);
     console.log('Team Centers:', teamCenters);
-    console.log('Player Positions:', allPlayers);
+    console.log('Landing Zones:', landing_zones);
+    return landing_zones;
 }
 
 function randomPointOnSphere(radius) {
@@ -42,28 +49,28 @@ function createPoint(radius, theta, phi) {
 }
 
 function normalize(vec) {
-    var length = Math.sqrt(vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2]);
-    return [vec[0]/length, vec[1]/length, vec[2]/length];
+    var length = Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
+    return [vec[0] / length, vec[1] / length, vec[2] / length];
 }
 
 function cross(a, b) {
     return [
-        a[1]*b[2] - a[2]*b[1],
-        a[2]*b[0] - a[0]*b[2],
-        a[0]*b[1] - a[1]*b[0]
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0]
     ];
 }
 
 function dot(a, b) {
-    return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
 function scale(vec, s) {
-    return [vec[0]*s, vec[1]*s, vec[2]*s];
+    return [vec[0] * s, vec[1] * s, vec[2] * s];
 }
 
 function add(a, b) {
-    return [a[0]+b[0], a[1]+b[1], a[2]+b[2]];
+    return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 }
 
 function generateBasis(centerVec) {
@@ -86,7 +93,7 @@ function rotateVector(v, axis, angle) {
     return add(add(term1, term2), term3);
 }
 
-function generateFairTeamSpawns(centerVec, angularDistance, nTeams, shape) {
+function generateFairTeamSpawns(centerVec, angularDistance, nTeams) {
     var basis = generateBasis(centerVec);
     var t = basis[0];
     var n = basis[1];

@@ -1,31 +1,56 @@
-define(function () {
+var _math;
+define(['./math'],function ( math ) {
+    _math = math;
     return {
         generate_landing_zones: generate_landing_zones
     };
 });
 
-// const radius = 1;
-// const nTeams = 4;
-// const playersPerTeam = 3;
+
 const teamDist = Math.PI / 2;
 const playerDist = Math.PI / 10;
-const rotationOffset = 0;
+const rotationOffset = [Math.PI/10, Math.PI*2];
 const triangleSharpness = 1.0;
 const spiralCurve = 3.0;
 const spacing = 0.05;
 const formationName = 'circle';
-// const teamDistributionShape = 'circle'; // i dont see any use in code
 
-function generate_landing_zones(planet, teams_count, players_per_team) {
+function generate_landing_zones(planet, teams) {
     var radius = planet.planet.radius;
+    var teams_count = teams.length;
 
     var centerVec = randomPointOnSphere(radius);
     var teamCenters = generateFairTeamSpawns(centerVec, teamDist, teams_count);
 
     var landing_zones = [];
     for (var i = 0; i < teamCenters.length; i++) {
+        console.log('Team:', i);
+        var team = teams[i];
         var teamPos = teamCenters[i];
-        var team_landing_zones = generatePlayerSpawns(teamPos, centerVec, playerDist, players_per_team, rotationOffset, formationName, triangleSharpness, spiralCurve, spacing);
+        var players_per_team = team.players.length; // Количество игроков для текущей команды
+        console.log('Players:', players_per_team);
+
+        var random_rotation_offset = 0 * _math.random_float(rotationOffset[0], rotationOffset[1]);
+
+        var players_positions = generatePlayerSpawns(
+            teamPos,
+            centerVec,
+            playerDist,
+            players_per_team,
+            random_rotation_offset,
+            formationName,
+            triangleSharpness,
+            spiralCurve,
+            spacing
+        );
+        // Привязываем зоны высадки к команде и игрокам
+        var team_landing_zones = _.map(players_positions, function (position, index) {
+            return {
+                teamId: team.id,
+                player: team.players[index],
+                position: position
+            }
+        });
         landing_zones = landing_zones.concat(team_landing_zones);
     }
 
@@ -35,6 +60,7 @@ function generate_landing_zones(planet, teams_count, players_per_team) {
     return landing_zones;
 }
 
+// Остальные функции остаются без изменений
 function randomPointOnSphere(radius) {
     var theta = Math.random() * 2 * Math.PI;
     var phi = Math.random() * Math.PI;

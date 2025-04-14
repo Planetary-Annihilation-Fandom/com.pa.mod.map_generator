@@ -19,19 +19,29 @@ define(function () {
         random_integer: function (min, max) {
             if (min == undefined) min = 0;
             if (max == undefined) max = 1;
-
             if (min === max) {
                 return max;
             }
 
-
             // Make the min and max values inclusive
             min = Math.ceil(min);
             max = Math.floor(max) + 1;
-
             // Generate a random number between min and max
             // The maximum is exclusive and the minimum is inclusive (stackoverflow)
             return Math.floor(Math.random() * (max - min) + min);
+        },
+
+        /**
+         * Returns a random floating point number between min and max, inclusive.
+         * If min and max are the same, returns max.
+         * @param {number} min - The minimum value.
+         * @param {number} max - The maximum value.
+         * @returns {number} A random floating point number between min and max.
+         */
+        random_float: function (min, max) {
+            if (min == undefined) min = 0;
+            if (max == undefined) max = 1;
+            return Math.random() * (max - min) + min;
         },
 
 

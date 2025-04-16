@@ -564,7 +564,7 @@ function get_random_system(planet_title, planet_size, biomeName, base_metal_dens
 
         var teams = get_teams();
 
-        var landing_zones = _surface.generate_landing_zones(planet, teams);
+        var landing_zones = _surface.generate_landing_zones(planet, teams, true);
         planet.landing_zones = {
             list: _.map(landing_zones, function (zone) {
                 return zone.position;  

@@ -23,7 +23,7 @@ var formations = {
     circle: formationCircle,
     line: formationLine,
     spiral: formationSpiral,
-    starburst: formationStarburst
+    // starburst: formationStarburst
 };
 
 /**
@@ -51,6 +51,9 @@ function generate_landing_zones(planet, teams, debug) {
     var teamCenters = generateFairTeamSpawns(centerVec, config.teamDist, teams_count);
 
     var landing_zones = [];
+    // Select random formation name
+    var formationNames = Object.keys(formations);
+    var randomFormationName = formationNames[Math.floor(Math.random() * formationNames.length)];
     // Process each team
     for (var i = 0; i < teamCenters.length; i++) {
         var team = teams[i];
@@ -70,6 +73,7 @@ function generate_landing_zones(planet, teams, debug) {
 
         // Generate random rotation offset
         var random_rotation_offset = randomFloat(config.rotationOffset[0], config.rotationOffset[1]);
+
         // Generate player positions
         var players_positions = generatePlayerSpawns(
             teamPos,
@@ -77,7 +81,7 @@ function generate_landing_zones(planet, teams, debug) {
             config.playerDist,
             players_per_team,
             random_rotation_offset,
-            config.formationName,
+            randomFormationName,
             config.triangleSharpness,
             config.spiralCurve,
             config.spacing
@@ -189,7 +193,7 @@ function formationCircle(team_center, global_center, angleStep, count, offsetAng
     }
 
     // Create quaternion for initial rotation: rotate up around forward by angleStep
-    var qFromTeamCenter = Quaternion.fromAxisAngle(forward, angleStep*0.5+(Math.PI/12));
+    var qFromTeamCenter = Quaternion.fromAxisAngle(forward, angleStep * 0.5 + (Math.PI / 12));
 
     // Generate positions for all players
     var positions = [];
@@ -253,7 +257,7 @@ function formationLine(team_center, global_center, angleStep, count, offsetAngle
     var positions = [];
     for (var i = 0; i < count; i++) {
         // Compute offset for this player
-        var offset_at_line = ((i + 1) - mid) * spacing;
+        var offset_at_line = ((i + 1) - mid) * (spacing+Math.PI/12);
         console.log("offset in degrees: " + (offset_at_line * 180 / Math.PI).toFixed(1));
         // Create quaternion for additional rotation around right axis
         var qOffset = Quaternion.fromAxisAngle(right, offset_at_line);
@@ -287,27 +291,27 @@ function formationLine(team_center, global_center, angleStep, count, offsetAngle
 function formationSpiral(team_center, global_center, angleStep, count, offsetAngle, spacing, curve) {
     // Define the "up" direction as the team center
     var up = team_center.normalize();
-    
+
     // Compute the "right" direction from global_center to team_center
     var right = team_center.subtract(global_center);
     var upComponent = right.dot(up);
     right = right.subtract(up.scale(upComponent)).normalize();
-    
+
     // Compute the "forward" direction as up cross right
     var forward = up.cross(right).normalize();
-    
+
     // Handle edge case: if team_center and global_center are too close
     if (right.length() === 0 || forward.length() === 0) {
         var ref = Math.abs(up.dot(new Vector3(1, 0, 0))) < 0.99 ? new Vector3(1, 0, 0) : new Vector3(0, 1, 0);
         right = up.cross(ref).normalize();
         forward = up.cross(right).normalize();
     }
-    
+
     var positions = [];
     for (var i = 0; i < count; i++) {
         // Compute the angular distance for this player (Archimedean spiral: r = a * θ)
         // Base distance plus incremental spacing
-        var dist = angleStep + i * spacing*0.1;
+        var dist = angleStep + i * spacing * 0.1;
         // Compute the rotation angle, scaled by curve for tightness
         offsetAngle = randomFloat(config.rotationOffset[0], config.rotationOffset[1]) * _math.random_sign() * 0;
         var theta = offsetAngle + i * curve;
@@ -322,7 +326,7 @@ function formationSpiral(team_center, global_center, angleStep, count, offsetAng
         finalPos = finalPos.normalize().scale(team_center.length());
         positions.push(finalPos);
     }
-    
+
     return positions;
 }
 

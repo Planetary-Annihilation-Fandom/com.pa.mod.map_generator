@@ -349,7 +349,7 @@ function get_random_system(planet_title, planet_size, biomeName, base_metal_dens
 
     // get_teams();
     create_landing_zones(planet);
-    create_height_adjustments(planet);
+    // create_height_adjustments(planet);
 
     console.log("MAP GENERATOR/MAIN: get_random_system: ");
     console.log(planet);

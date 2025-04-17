@@ -1,6 +1,6 @@
 {
     "identifier": "com.pa.mod.map_generator",
-    "author":"tatapstar",
+    "author":"tatapstar (ui, code), TT (code, ui), MaréchalGryzzly (code)",
 
     "icon": "https://raw.githubusercontent.com/Planetary-Annihilation-Fandom/com.pa.mod.map_generator/refs/heads/main/icon.png",
     "display_name": "Godblessed Map Generator",
@@ -17,7 +17,7 @@
 
     "build": "120799",
     "version": "5.0.0-up0",
-    "date": "2025-04-16",
+    "date": "2025-04-17",
     
     "context":"client",
     "priority": 100,
